@@ -1,0 +1,7 @@
+creato scrolling e scraping nomi per anno(nel test 473 titoli ma estratti solo 470)
+creato ottenimento servizi di streming
+
+
+da creare db serie uscite facendo scraping anno per anno
+creare check nuove serie
+creare database con serie e informazioni
