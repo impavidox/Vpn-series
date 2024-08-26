@@ -2,6 +2,11 @@ creato scrolling e scraping nomi per anno(nel test 473 titoli ma estratti solo 4
 creato ottenimento servizi di streming
 creato  db serie uscite facendo scraping anno per anno
 creato programma per raccolta informazioni. da aggiustare alcuni no stream ottenuti e l'estrazione del numero di stagioni in alcuni casi specifici
+utilizzo proxy manager per richieste
+tempo stimato per aggioramento completo db 5h
+stato attuale db 2013,2014
 
 creare check nuove serie
-creare database con serie e informazioni
+creare front-end
+creare back-end
+usare https://www.omdbapi.com/ per reperire informazioni su serie e immagine
