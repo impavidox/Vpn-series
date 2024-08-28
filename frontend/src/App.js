@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import axios from 'axios';
 import './App.css'; // Import custom CSS
 
@@ -7,6 +7,20 @@ function App() {
   const [titleFilter, setTitleFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [selectedSeries, setSelectedSeries] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const filterCriteria = {};
+        const response = await axios.post('http://127.0.0.1:5000/api/filter',filterCriteria); // Replace with your initial data endpoint
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching initial data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleFilter = async () => {
     try {
@@ -58,7 +72,7 @@ function App() {
         {data.map((item, index) => (
           <div key={index} className="grid-item" onClick={() => handleItemClick(item)}>
             <div className="image-container">
-              <img src={item.poster} alt={item.title} className="series-image" />
+              <img src={"https://image.tmdb.org/t/p/w185/"+item.poster_path} alt={item.title} className="series-image" />
             </div>
             <div className="info-container">
               <h2 className="series-title">{item.title}</h2>
@@ -73,19 +87,17 @@ function App() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <span className="close-button" onClick={closeModal}>&times;</span>
             <div className="modal-image-container">
-              <img src={selectedSeries.poster} alt={selectedSeries.title} className="modal-image" />
+              <img src={"https://image.tmdb.org/t/p/w1280/"+selectedSeries.backdrop_path} alt={selectedSeries.title} className="modal-image" />
             </div>
             <div className="modal-info">
               <h2>{selectedSeries.title}</h2>
               <p><strong>Plot:</strong> {selectedSeries.plot}</p>
-              <p><strong>Actors:</strong> {selectedSeries.actors}</p>
-              <p><strong>Country:</strong> {selectedSeries.country}</p>
-              <p><strong>Genre:</strong> {selectedSeries.genre.join(', ')}</p>
-              <p><strong>Language:</strong> {selectedSeries.language}</p>
-              <p><strong>Release Date:</strong> {selectedSeries.released}</p>
-              <p><strong>IMDb Rating:</strong> {selectedSeries.imdbRating} ({selectedSeries.imdbVotes} votes)</p>
-              <p><strong>Type:</strong> {selectedSeries.type}</p>
-              <p><strong>Total Seasons:</strong> {selectedSeries.totalSeasons}</p>
+              <p><strong>Actors:</strong> {selectedSeries.actors ? selectedSeries.actors.join(', ') : 'N/A'}</p>
+              <p><strong>Genre:</strong> {selectedSeries.genres ? selectedSeries.genres.join(', ') : 'N/A'}</p>
+              <p><strong>Episode run time:</strong> {selectedSeries.episode_run_time ? selectedSeries.episode_run_time : 'N/A'}</p>
+              <p><strong>Release Date:</strong> {selectedSeries.year}</p>
+              <p><strong>Rating:</strong> {selectedSeries.vote_average} ({selectedSeries.vote_count} votes)</p>
+              <p><strong>Total Seasons:</strong> {selectedSeries.number_of_seasons}</p>
             </div>
           </div>
         </div>

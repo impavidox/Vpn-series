@@ -7,8 +7,36 @@ tempo stimato per aggioramento completo db 5h
 stato attuale db 2013,2014
 creato front-end
 creato back-end
-usato https://www.omdbapi.com/ per reperire informazioni su serie e immagine, valutare aggiunta/sostituzione con themoviedb.org
+usato themoviedb.org per reperire informazioni su serie e immagine
 
 creare check nuove serie
 fare ulteriori test su ottimizzazione programma
 containerizzare backend per lambda
+
+
+bug  con stagioni molto lunghe
+{
+  "_id": {
+    "$oid": "66cf4f6e86de86b4f54b6ffb"
+  },
+  "title": "Emmerdale",
+  "id": 2527,
+  "actors": [
+    "Mark Charnock",
+    "Dominic Brunt",
+    "Lesley Dunlop"
+  ],
+  "backdrop_path": "/fZclJkehcPnU6vUGh5JXfpXidr3.jpg",
+  "episode_run_time": 30,
+  "genres": [
+    "Soap",
+    "Drama"
+  ],
+  "number_of_episodes": 6802,
+  "number_of_seasons": 34,
+  "plot": "The lives of several families in the Yorkshire Dales revolve around a farm and the nearby village. With murders, affairs, lies, deceit, laughter and tears, it's all there in the village.",
+  "popularity": 833.405,
+  "poster_path": "/ualtuRRNYa9Fj61wSuBVcuvaVDP.jpg",
+  "vote_average": 4.1,
+  "vote_count": 90
+}
