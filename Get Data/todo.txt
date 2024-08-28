@@ -12,6 +12,7 @@ usato themoviedb.org per reperire informazioni su serie e immagine
 creare check nuove serie
 fare ulteriori test su ottimizzazione programma
 containerizzare backend per lambda
+inserire informazioni streaming nel modale serie
 
 
 bug  con stagioni molto lunghe
