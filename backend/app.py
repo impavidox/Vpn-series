@@ -15,7 +15,7 @@ collection = db['series_collectiontmdb']
 @app.route('/api/data', methods=['GET'])
 def get_data():
     query_params = request.args.to_dict()  # Convert query parameters to a dictionary
-    data = collection.find(query_params).limit(50)
+    data = collection.find(query_params).limit(56)
     return dumps(data)  # Return JSON response
 
 @app.route('/api/filter', methods=['POST'])
@@ -34,7 +34,7 @@ def filter_data():
 
         # Example: Handle more filters if needed...
         # Retrieve and limit results to 50
-    filtered_data = collection.find(query).sort( { 'vote_count': -1 } ).limit(50)
+    filtered_data = collection.find(query).sort( { 'vote_count': -1 } ).limit(56)
 
     return dumps(filtered_data)
 
