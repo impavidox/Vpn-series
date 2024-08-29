@@ -8,11 +8,12 @@ stato attuale db 2013,2014
 creato front-end
 creato back-end
 usato themoviedb.org per reperire informazioni su serie e immagine
+creato in test.py funzione per creare query per estrarre risultati voluti
 
 creare check nuove serie
-fare ulteriori test su ottimizzazione programma
 containerizzare backend per lambda
 inserire informazioni streaming nel modale serie
+capire perchè money heist non ha risultati(inserie check su chiamata api per streaming results in caso di fallimento)
 
 
 bug  con stagioni molto lunghe

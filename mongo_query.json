@@ -1,0 +1,54 @@
+{
+    "$and": [
+        {
+            "provider_data.IT.Amazon Prime Video": {
+                "$exists": false
+            }
+        },
+        {
+            "$expr": {
+                "$gt": [
+                    {
+                        "$size": {
+                            "$ifNull": [
+                                {
+                                    "$filter": {
+                                        "input": {
+                                            "$reduce": {
+                                                "input": {
+                                                    "$objectToArray": "$provider_data"
+                                                },
+                                                "initialValue": [],
+                                                "in": {
+                                                    "$concatArrays": [
+                                                        "$$value",
+                                                        {
+                                                            "$objectToArray": "$$this.v"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "as": "provider",
+                                        "cond": {
+                                            "$or": [
+                                                {
+                                                    "$eq": [
+                                                        "$$provider.k",
+                                                        "Amazon Prime Video"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                []
+                            ]
+                        }
+                    },
+                    0
+                ]
+            }
+        }
+    ]
+}
