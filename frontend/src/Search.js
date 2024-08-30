@@ -16,7 +16,10 @@ function Search() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // Fetch data based on filters, country, streaming, and page
+  const [appliedTitleFilter, setAppliedTitleFilter] = useState('');  // Separate state for applied title filter
+  const [appliedYearFilter, setAppliedYearFilter] = useState('');    // Separate state for applied year filter
+
+  // Fetch data based on applied filters, country, streaming, and page
   const fetchData = useCallback(async (titleFilter, yearFilter, page, country, streaming) => {
     setIsLoading(true);
 
@@ -44,10 +47,10 @@ function Search() {
     }
   }, []);
 
-  // Trigger data fetch when filters or page change
+  // Trigger data fetch only when page changes or filters are applied
   useEffect(() => {
-    fetchData(titleFilter, yearFilter, page, country, streaming);
-  }, [page, titleFilter, yearFilter, country, streaming, fetchData]);
+    fetchData(appliedTitleFilter, appliedYearFilter, page, country, streaming);
+  }, [page, appliedTitleFilter, appliedYearFilter, country, streaming, fetchData]);
 
   // Handle infinite scrolling
   useEffect(() => {
@@ -61,11 +64,13 @@ function Search() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isLoading, hasMore]);
 
-  // Apply filters and reset data
+  // Apply filters when the button is clicked
   const handleFilter = () => {
-    setPage(1);
-    setData([]);
-    setHasMore(true);
+    setAppliedTitleFilter(titleFilter);
+    setAppliedYearFilter(yearFilter);
+    setPage(1);  // Reset to the first page of results
+    setData([]);  // Clear previous data
+    setHasMore(true);  // Reset hasMore to true
   };
 
   // Handle item selection
