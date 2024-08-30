@@ -6,6 +6,16 @@
             }
         },
         {
+            "provider_data.IT.Netflix": {
+                "$exists": false
+            }
+        },
+        {
+            "provider_data.IT.Disney Plus": {
+                "$exists": false
+            }
+        },
+        {
             "$expr": {
                 "$gt": [
                     {
@@ -36,6 +46,18 @@
                                                     "$eq": [
                                                         "$$provider.k",
                                                         "Amazon Prime Video"
+                                                    ]
+                                                },
+                                                {
+                                                    "$eq": [
+                                                        "$$provider.k",
+                                                        "Netflix"
+                                                    ]
+                                                },
+                                                {
+                                                    "$eq": [
+                                                        "$$provider.k",
+                                                        "Disney Plus"
                                                     ]
                                                 }
                                             ]

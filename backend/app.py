@@ -22,6 +22,7 @@ def get_data():
 def filter_data():
     filter_criteria = request.json
     query = {}
+    print(filter_criteria)
     if filter_criteria:
         
         # Example: Handle title filtering with partial match (case-insensitive)
@@ -31,12 +32,68 @@ def filter_data():
         # Example: Handle year filtering
         if 'year' in filter_criteria:
             query['year'] = str(filter_criteria['year'])
-
-        # Example: Handle more filters if needed...
-        # Retrieve and limit results to 50
-    filtered_data = collection.find(query).sort( { 'vote_count': -1 } ).limit(56)
-
+    page = int(filter_criteria.get('page', 1))
+    limit = 56  # Number of results per page
+    skip = (page - 1) * limit  # Calculate the number of documents to skip
+    query_user=build_mongo_query(filter_criteria['country'],filter_criteria['streaming'])
+    # Retrieve and limit results to the requested page
+    combined_query = {**query_user, **query}
+    filtered_data = list(collection.find(combined_query).sort('vote_count', -1).skip(skip).limit(limit))
     return dumps(filtered_data)
+
+
+def build_mongo_query(country, providers):
+    # Building the $and clause dynamically based on the providers
+    and_clauses = [{f"provider_data.{country}.{provider}": {"$exists": False}} for provider in providers]
+
+    query = {
+        "$and": and_clauses + [
+            {
+                "$expr": {
+                    "$gt": [
+                        {
+                            "$size": {
+                                "$ifNull": [
+                                    {
+                                        "$filter": {
+                                            "input": {
+                                                "$reduce": {
+                                                    "input": {
+                                                        "$objectToArray": "$provider_data"
+                                                    },
+                                                    "initialValue": [],
+                                                    "in": {
+                                                        "$concatArrays": [
+                                                            "$$value",
+                                                            {
+                                                                "$objectToArray": "$$this.v"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "as": "provider",
+                                            "cond": {
+                                                "$or": [
+                                                    {"$eq": ["$$provider.k", provider]} 
+                                                    for provider in providers
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    []
+                                ]
+                            }
+                        },
+                        0
+                    ]
+                }
+            }
+        ]
+    }
+    
+    return query
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -58,7 +58,7 @@ def write_query_to_file(filename, query):
 
 # Example usage:
 country = "IT"
-providers = ["Amazon Prime Video"]
+providers = ["Amazon Prime Video","Netflix","Disney Plus"]
 
 mongo_query = build_mongo_query(country, providers)
 write_query_to_file("mongo_query.json", mongo_query)
