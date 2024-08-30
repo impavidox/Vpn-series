@@ -9,11 +9,17 @@ creato front-end
 creato back-end
 usato themoviedb.org per reperire informazioni su serie e immagine
 creato in test.py funzione per creare query per estrarre risultati voluti
+creata home page con inserimento informazione utente
+la pagina dei risultati mostra correttamente le informazioni filtrate
+aggiunto infinity scroll e funziona correttamente
 
 creare check nuove serie
 containerizzare backend per lambda
 inserire informazioni streaming nel modale serie
 capire perchè money heist non ha risultati(inserie check su chiamata api per streaming results in caso di fallimento)
+informazioni streaming spesso errate(night manager, true blood)
+creare animazione che entra nella televisione
+aggiungere sistema filtri più raffinato
 
 
 bug  con stagioni molto lunghe
