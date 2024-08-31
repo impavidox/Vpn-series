@@ -22,7 +22,6 @@ def get_data():
 def filter_data():
     filter_criteria = request.json
     query = {}
-    print(filter_criteria)
     if filter_criteria:
         
         # Example: Handle title filtering with partial match (case-insensitive)
