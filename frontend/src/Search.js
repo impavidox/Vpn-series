@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './Search.css';
+import StreamingInfo from './StreamingInfo';  // Import the StreamingInfo component
 
 function Search() {
   const location = useLocation();
@@ -37,6 +38,7 @@ function Search() {
       if (response.data && response.data.length > 0) {
         setData(prevData => (page === 1 ? response.data : [...prevData, ...response.data]));
         setHasMore(true);
+        console.log(streaming)
       } else {
         setHasMore(false);
       }
@@ -153,6 +155,9 @@ function Search() {
                 <p><strong>Release Date:</strong> {selectedSeries.year}</p>
                 <p><strong>Rating:</strong> {selectedSeries.vote_average} ({selectedSeries.vote_count} votes)</p>
                 <p><strong>Total Seasons:</strong> {selectedSeries.number_of_seasons}</p>
+
+                {/* Streaming Information */}
+                <StreamingInfo selectedSeries={selectedSeries} streaming={streaming} />
               </div>
             )}
           </div>

@@ -18,7 +18,7 @@ function Home() {
   const streamingOptions = [
     { value: 'Netflix', label: 'Netflix' },
     { value: 'Amazon Prime Video', label: 'Amazon Prime Video' },
-    { value: 'Disney plus', label: 'Disney+' }
+    { value: 'Disney Plus', label: 'Disney+' }
     // Add more streaming options...
   ];
 
