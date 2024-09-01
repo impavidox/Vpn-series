@@ -21,6 +21,7 @@ informazioni streaming spesso errate(night manager, true blood)
 creare animazione che entra nella televisione(immagine creata ma da capire come gestire la cosa)
 aggiungere sistema filtri più raffinato
 togliere scroll pagina search con modale aperto
+il back dello streaming provider torna a fase 1 invece che 2
 
 
 bug  con stagioni molto lunghe
