@@ -9,7 +9,7 @@ uri = "mongodb+srv://aantonaci47:LcvU0AMhm3jBAZQA@cluster0.sw3rz.mongodb.net/?re
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['vpn-series-db']
 collection = db['series_collectiontmdb']
-series_list = list(collection.find({'year' : { '$exists' : False }}, {"id": 1, "_id": 1}))
+series_list = list(collection.find())
 print(len(series_list))
 
 
@@ -17,7 +17,7 @@ print(len(series_list))
 # TMDB API headers
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNjBmZDE0NTFmNTJkZjRkNzFhZjcyOTU1MTEwODM1MCIsIm5iZiI6MTcyNDc5OTU5OC4yMTc0OTEsInN1YiI6IjY2Y2U1YTAxYWFjOTVjODg4YTY2ZDViOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.D1IRi_GiU_9BLWXbl2jGApNVYL_bMDGBPONBvs0XZaE"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNjBmZDE0NTFmNTJkZjRkNzFhZjcyOTU1MTEwODM1MCIsIm5iZiI6MTcyNDc5OTQ4OS42LCJzdWIiOiI2NmNlNWEwMWFhYzk1Yzg4OGE2NmQ1YjkiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ntuRHqANPqhjnRT-ltKzy-oiLNiVgymLSEP2Kr2dWtU"
 }
 
 def fetch_and_store(series):

@@ -14,14 +14,19 @@ la pagina dei risultati mostra correttamente le informazioni filtrate
 aggiunto infinity scroll e funziona correttamente
 inserire informazioni streaming nel modale serie(inserito ma da renedere fancy)
 
+
 creare check nuove serie
 containerizzare backend per lambda
 capire perchè money heist non ha risultati(inserie check su chiamata api per streaming results in caso di fallimento)
 informazioni streaming spesso errate(night manager, true blood)
 creare animazione che entra nella televisione(immagine creata ma da capire come gestire la cosa)
 aggiungere sistema filtri più raffinato
-togliere scroll pagina search con modale aperto
-il back dello streaming provider torna a fase 1 invece che 2
+sistemare bug focus modale mobile
+sistemare bug scroll on first load
+sistemare bug bordo azzurro
+order straming country by "complitness"
+aggiustare stile scroll bar modale
+bug durata alcune serie
 
 
 bug  con stagioni molto lunghe
