@@ -810,3 +810,218 @@
       font-size: 18px;
     }
   }
+
+
+  /* Filter section styles - updated for genre filter */
+.filter-section {
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1000px;
+    width: 90%;
+    transform: translateY(40px);
+    opacity: 0;
+    transition: transform 0.6s ease-out 0.2s, opacity 0.6s ease-out 0.2s;
+    box-sizing: border-box;
+  }
+  
+  .filter-section.animate-in {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .filter-container {
+    display: flex;
+    flex-direction: column;
+    background: rgba(46, 46, 46, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    gap: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  .input-group {
+    position: relative;
+    flex: 1 1 200px;
+  }
+  
+  .input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: #888;
+    pointer-events: none;
+  }
+  
+  .filter-input {
+    width: 100%;
+    padding: 14px 14px 14px 45px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 2px solid rgba(67, 188, 205, 0.3);
+    background-color: rgba(46, 46, 46, 0.5);
+    color: white;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+  }
+  
+  .filter-input::placeholder {
+    color: #888;
+  }
+  
+  .filter-input:focus {
+    outline: none;
+    border-color: var(--blue);
+    background-color: rgba(46, 46, 46, 0.8);
+    box-shadow: 0 0 0 2px rgba(67, 188, 205, 0.2);
+  }
+  
+  .filter-button {
+    padding: 14px 24px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right, var(--orange), #ff7a45);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(239, 131, 84, 0.3);
+    margin-top: 5px;
+  }
+  
+  .filter-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(239, 131, 84, 0.4);
+    background: linear-gradient(to right, #ff6a3c, #ff8b5a);
+  }
+  
+  .filter-button:active {
+    transform: translateY(-1px);
+  }
+  
+  .filter-icon {
+    margin-right: 8px;
+  }
+  
+  .button-text {
+    display: inline-block;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .filter-container {
+      padding: 15px;
+    }
+    
+    .filter-input {
+      padding: 12px 12px 12px 40px;
+      font-size: 0.95rem;
+    }
+    
+    .filter-button {
+      padding: 12px 20px;
+      font-size: 0.95rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .filter-section {
+      padding: 10px;
+    }
+    
+    .filter-container {
+      padding: 12px;
+    }
+    
+    .filter-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .filter-input {
+      padding: 10px 10px 10px 35px;
+      font-size: 0.9rem;
+    }
+    
+    .input-icon {
+      font-size: 1rem;
+      left: 12px;
+    }
+    
+    .filter-button {
+      padding: 10px 16px;
+      font-size: 0.9rem;
+    }
+  }
+
+
+  /* Applied filters display */
+.applied-filters {
+    background: rgba(46, 46, 46, 0.5);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease;
+  }
+  
+  .applied-filters-title {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+  
+  .applied-filters-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .applied-filter-tag {
+    display: flex;
+    align-items: center;
+    background: rgba(67, 188, 205, 0.2);
+    border: 1px solid rgba(67, 188, 205, 0.3);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 0.9rem;
+    color: white;
+    transition: all 0.3s ease;
+  }
+  
+  .applied-filter-tag:hover {
+    background: rgba(67, 188, 205, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .applied-filter-tag.genre-tag {
+    background: rgba(239, 131, 84, 0.2);
+    border: 1px solid rgba(239, 131, 84, 0.3);
+  }
+  
+  .applied-filter-tag.genre-tag:hover {
+    background: rgba(239, 131, 84, 0.3);
+  }
+  
+  .filter-tag-icon {
+    margin-right: 5px;
+    font-size: 1.1rem;
+  }

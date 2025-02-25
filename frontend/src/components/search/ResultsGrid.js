@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import GridItem from './GridItem';
 import InfiniteScrollLoader from './InfiniteScrollLoader';
 import { formatResultsCount } from '../../utils/helpers';
+import { GENRES } from '../../constants/genres';
 
 /**
  * Grid component for displaying search results
- * With added null checks to prevent errors
+ * Updated with support for genre filtering
  * 
  * @param {Object} props - Component props
  * @param {Array} props.data - Array of search results
@@ -15,6 +16,7 @@ import { formatResultsCount } from '../../utils/helpers';
  * @param {string|number} props.totalResults - Total number of results
  * @param {string} props.appliedTitleFilter - Applied title filter
  * @param {string} props.appliedYearFilter - Applied year filter
+ * @param {Array} props.appliedGenreFilter - Applied genre filters
  * @param {boolean} props.animationComplete - Whether animations are complete
  * @param {Function} props.onItemClick - Function to call when an item is clicked
  * @param {React.RefObject} props.loaderRef - Ref for the loader element
@@ -26,6 +28,7 @@ const ResultsGrid = ({
   totalResults = 0,
   appliedTitleFilter = '',
   appliedYearFilter = '',
+  appliedGenreFilter = [],
   animationComplete = false,
   onItemClick,
   loaderRef
@@ -33,6 +36,20 @@ const ResultsGrid = ({
   // Ensure we have a valid data array
   const safeData = Array.isArray(data) ? data : [];
   const formattedResultsCount = formatResultsCount(totalResults, safeData.length);
+
+  // Get genre names for display
+  const getGenreNames = () => {
+    if (!appliedGenreFilter || appliedGenreFilter.length === 0) return '';
+    
+    const genreNames = appliedGenreFilter.map(genreId => {
+      const genre = GENRES.find(g => g.id === genreId);
+      return genre ? genre.name : '';
+    }).filter(Boolean);
+    
+    return genreNames.join(', ');
+  };
+  
+  const genreString = getGenreNames();
 
   return (
     <div className={`results-section ${animationComplete ? 'animate-in' : ''}`}>
@@ -43,6 +60,7 @@ const ResultsGrid = ({
               <span className="results-count">{formattedResultsCount}</span> shows found
               {appliedTitleFilter && ` for "${appliedTitleFilter}"`}
               {appliedYearFilter && ` in ${appliedYearFilter}`}
+              {genreString && ` in genres: ${genreString}`}
               {totalResults !== '1000+' && safeData.length < totalResults && 
                 <span className="showing-count"> (Showing {safeData.length})</span>
               }
@@ -57,6 +75,40 @@ const ResultsGrid = ({
           )}
         </h2>
       </div>
+
+      {/* Applied filters display */}
+      {(appliedTitleFilter || appliedYearFilter || appliedGenreFilter.length > 0) && (
+        <div className="applied-filters">
+          <div className="applied-filters-title">Active filters:</div>
+          <div className="applied-filters-list">
+            {appliedTitleFilter && (
+              <div className="applied-filter-tag">
+                <span className="filter-tag-icon">🔍</span>
+                <span>Title: {appliedTitleFilter}</span>
+              </div>
+            )}
+            
+            {appliedYearFilter && (
+              <div className="applied-filter-tag">
+                <span className="filter-tag-icon">📅</span>
+                <span>Year: {appliedYearFilter}</span>
+              </div>
+            )}
+            
+            {appliedGenreFilter.map(genreId => {
+              const genre = GENRES.find(g => g.id === genreId);
+              if (!genre) return null;
+              
+              return (
+                <div key={genreId} className="applied-filter-tag genre-tag">
+                  <span className="filter-tag-icon">{genre.icon}</span>
+                  <span>{genre.name}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="grid-container">
         {safeData.map((item, index) => {
@@ -108,6 +160,7 @@ ResultsGrid.propTypes = {
   totalResults: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   appliedTitleFilter: PropTypes.string,
   appliedYearFilter: PropTypes.string,
+  appliedGenreFilter: PropTypes.array,
   animationComplete: PropTypes.bool,
   onItemClick: PropTypes.func.isRequired,
   loaderRef: PropTypes.object

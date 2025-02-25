@@ -24,6 +24,7 @@ const ApiService = {
    * @param {number} filterCriteria.page - Page number
    * @param {string} filterCriteria.country - Country code to filter by
    * @param {Array} filterCriteria.streaming - Streaming providers to include
+   * @param {Array} filterCriteria.genres - Genres to filter by
    * @returns {Promise<Array>} - Filtered shows data
    */
   async filterShows(filterCriteria) {
@@ -68,6 +69,22 @@ const ApiService = {
     } catch (error) {
       console.error("Error fetching streaming availability:", error);
       throw error;
+    }
+  },
+
+  /**
+   * Get available genres
+   * 
+   * @returns {Promise<Array>} - List of available genres
+   */
+  async getGenres() {
+    try {
+      const response = await api.get('/genres');
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching genres:", error);
+      // Return our local genres in case the API call fails
+      return [];
     }
   }
 };

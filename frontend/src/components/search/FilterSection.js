@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import GenreFilter from './GenreFilter';
 
 /**
  * Filter section component for the search page
+ * Updated to use the portal-based genre filter component
  * 
  * @param {Object} props - Component props
  * @param {boolean} props.animationComplete - Whether animations are complete
@@ -11,9 +13,13 @@ import PropTypes from 'prop-types';
 const FilterSection = ({ animationComplete, onApplyFilters }) => {
   const [titleFilter, setTitleFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
 
   const handleFilter = () => {
-    onApplyFilters(titleFilter, yearFilter);
+    // Close dropdown before applying filters
+    setIsGenreDropdownOpen(false);
+    onApplyFilters(titleFilter, yearFilter, selectedGenres);
   };
 
   const handleKeyPress = (e) => {
@@ -22,34 +28,53 @@ const FilterSection = ({ animationComplete, onApplyFilters }) => {
     }
   };
 
+  const handleGenreChange = (genres) => {
+    setSelectedGenres(genres);
+  };
+
+  // Add dropdown state control
+  const handleGenreDropdownToggle = (isOpen) => {
+    setIsGenreDropdownOpen(isOpen);
+  };
+
   return (
     <div className={`filter-section ${animationComplete ? 'animate-in' : ''}`}>
       <div className="filter-container">
-        <div className="input-group">
-          <span className="input-icon">🔍</span>
-          <input
-            type="text"
-            value={titleFilter}
-            onChange={(e) => setTitleFilter(e.target.value)}
-            placeholder="Search by title"
-            className="filter-input"
-            onKeyPress={handleKeyPress}
-          />
+        <div className="filter-row">
+          <div className="input-group">
+            <span className="input-icon">🔍</span>
+            <input
+              type="text"
+              value={titleFilter}
+              onChange={(e) => setTitleFilter(e.target.value)}
+              placeholder="Search by title"
+              className="filter-input"
+              onKeyPress={handleKeyPress}
+            />
+          </div>
+          
+          <div className="input-group">
+            <span className="input-icon">📅</span>
+            <input
+              type="text"
+              value={yearFilter}
+              onChange={(e) => setYearFilter(e.target.value)}
+              placeholder="Filter by year"
+              className="filter-input"
+              onKeyPress={handleKeyPress}
+            />
+          </div>
         </div>
         
-        <div className="input-group">
-          <span className="input-icon">📅</span>
-          <input
-            type="text"
-            value={yearFilter}
-            onChange={(e) => setYearFilter(e.target.value)}
-            placeholder="Filter by year"
-            className="filter-input"
-            onKeyPress={handleKeyPress}
-          />
-        </div>
+        {/* Portal-based Genre filter */}
+        <GenreFilter
+          selectedGenres={selectedGenres}
+          onGenreChange={handleGenreChange}
+          onDropdownToggle={handleGenreDropdownToggle}
+        />
         
         <button onClick={handleFilter} className="filter-button">
+          <span className="filter-icon">🔍</span>
           <span className="button-text">Apply Filters</span>
         </button>
       </div>

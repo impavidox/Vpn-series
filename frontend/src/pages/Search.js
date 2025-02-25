@@ -19,7 +19,7 @@ import '../styles/Search.css';
 
 /**
  * Search page component
- * Handles filtering and displaying search results
+ * Updated to include genre filtering
  */
 const Search = () => {
   // Navigation and location
@@ -35,6 +35,7 @@ const Search = () => {
   const [selectedSeries, setSelectedSeries] = useState(null);
   const [appliedTitleFilter, setAppliedTitleFilter] = useState('');
   const [appliedYearFilter, setAppliedYearFilter] = useState('');
+  const [appliedGenreFilter, setAppliedGenreFilter] = useState([]);
   const [animationComplete, setAnimationComplete] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [totalResults, setTotalResults] = useState('1000+');
@@ -49,6 +50,7 @@ const Search = () => {
         page,
         country,
         streaming: selectedStreamingProviders,
+        genres: appliedGenreFilter.length > 0 ? appliedGenreFilter : undefined
       };
 
       const responseData = await ApiService.filterShows(filterCriteria);
@@ -93,7 +95,7 @@ const Search = () => {
       }
       return [];
     }
-  }, [appliedTitleFilter, appliedYearFilter, country, selectedStreamingProviders]);
+  }, [appliedTitleFilter, appliedYearFilter, appliedGenreFilter, country, selectedStreamingProviders]);
 
   // Load more data for infinite scrolling
   const loadMoreData = useCallback((nextPage) => {
@@ -118,7 +120,7 @@ const Search = () => {
   // Reset initial load flag when filters change
   useEffect(() => {
     initialLoadCompleted.current = false;
-  }, [appliedTitleFilter, appliedYearFilter, country, selectedStreamingProviders]);
+  }, [appliedTitleFilter, appliedYearFilter, appliedGenreFilter, country, selectedStreamingProviders]);
 
   // Start animations after component mounts
   useEffect(() => {
@@ -130,9 +132,10 @@ const Search = () => {
   }, []);
 
   // Handle filter application
-  const handleApplyFilters = (title, year) => {
+  const handleApplyFilters = (title, year, genres) => {
     setAppliedTitleFilter(title);
     setAppliedYearFilter(year);
+    setAppliedGenreFilter(genres);
     resetPagination();
     setData([]);
     setHasMore(true);
@@ -167,7 +170,7 @@ const Search = () => {
         onLogoClick={handleBackToHome}
       />
 
-      {/* Filter section */}
+      {/* Filter section with genre filter */}
       <FilterSection 
         animationComplete={animationComplete}
         onApplyFilters={handleApplyFilters}
@@ -181,6 +184,7 @@ const Search = () => {
         totalResults={totalResults}
         appliedTitleFilter={appliedTitleFilter}
         appliedYearFilter={appliedYearFilter}
+        appliedGenreFilter={appliedGenreFilter}
         animationComplete={animationComplete}
         onItemClick={handleItemClick}
         loaderRef={loaderRef}

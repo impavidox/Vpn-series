@@ -128,3 +128,27 @@
   .modal-content {
     margin: 0 auto;
   }
+
+
+  /* Global stacking contexts */
+/* These ensure components work together with proper z-index layering */
+#root {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    isolation: isolate; /* Create a new stacking context */
+  }
+  
+  /* Z-index layers for the application */
+  :root {
+    --z-index-background: 0;
+    --z-index-content: 10;
+    --z-index-filter: 20;
+    --z-index-dropdown: 100;
+    --z-index-modal: 1000;
+  }
+  
+  /* Ensure proper stacking of UI elements */
+  .search-page-container {
+    isolation: isolate; /* Create a new stacking context */
+  }
