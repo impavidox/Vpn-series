@@ -306,7 +306,7 @@ function Search() {
   {data.map((item, index) => (
     <div 
       key={`${item._id || item.id || index}`} 
-      className="grid-item visible" // Add 'visible' class to ensure items are shown
+      className="grid-item visible"
       onClick={() => handleItemClick(item)}
     >
       <div className="image-container">
@@ -320,7 +320,21 @@ function Search() {
           }}
         />
         <div className="rating-badge">{item.vote_average?.toFixed(1) || '?'}</div>
+        
+        {/* Add hover content with scrollbar */}
+        <div className="item-hover-content">
+          <div className="hover-genres">
+            {item.genres?.slice(0, 3).map((genre, idx) => (
+              <span key={idx} className="hover-genre-tag">{genre}</span>
+            )) || <span className="hover-genre-tag">Unknown Genre</span>}
+          </div>
+          <div className="hover-overview">
+            {item.plot?.substring(0, 150) || 'No overview available.'}
+            {item.plot?.length > 150 ? '...' : ''}
+          </div>
+        </div>
       </div>
+      
       <div className="info-container">
         <h2 className="series-title">{item.title}</h2>
         <p className="series-year">{item.year}</p>

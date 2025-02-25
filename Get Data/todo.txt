@@ -13,7 +13,9 @@ creata home page con inserimento informazione utente
 la pagina dei risultati mostra correttamente le informazioni filtrate
 aggiunto infinity scroll e funziona correttamente
 inserire informazioni streaming nel modale serie(inserito ma da renedere fancy)
-
+sistemare bug scroll on first load
+sistemare bug bordo azzurro
+aggiustare stile scroll bar modale
 
 creare check nuove serie
 containerizzare backend per lambda
@@ -22,10 +24,7 @@ informazioni streaming spesso errate(night manager, true blood)
 creare animazione che entra nella televisione(immagine creata ma da capire come gestire la cosa)
 aggiungere sistema filtri più raffinato
 sistemare bug focus modale mobile
-sistemare bug scroll on first load
-sistemare bug bordo azzurro
-order straming country by "complitness"
-aggiustare stile scroll bar modale
+order streaming country per quantità di stagioni
 bug durata alcune serie
 
 
