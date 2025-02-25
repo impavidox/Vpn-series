@@ -1,20 +1,27 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './Home'; // Import Home component
-import Search from './Search'; // Import the existing result page component
+import { AppProvider } from './context/AppContext';
+import Home from './pages/Home';
+import Search from './pages/Search';
+import './styles/index.css';
 
-
+/**
+ * Main App component
+ * Sets up routing and context providers
+ */
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Home page route */}
-        <Route path="/" element={<Home />} />
+    <AppProvider>
+      <Router>
+        <Routes>
+          {/* Home page route */}
+          <Route path="/" element={<Home />} />
 
-        {/* Result/Search page route */}
-        <Route path="/search" element={<Search />} />
-      </Routes>
-    </Router>
+          {/* Search page route */}
+          <Route path="/search" element={<Search />} />
+        </Routes>
+      </Router>
+    </AppProvider>
   );
 }
 

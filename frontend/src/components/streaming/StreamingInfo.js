@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import providerDict from './provider_dict.json';
-import countryDict from './country_dict.json';
-import './StreamingInfo.css';
+import PropTypes from 'prop-types';
+import providerDict from '../../provider_dict.json';
+import countryDict from '../../country_dict.json';
+import { filterProviders, calculateMaxSeasons } from '../../utils/helpers';
+import '../../styles/StreamingInfo.css';
 
-function StreamingInfo({ selectedSeries, streaming }) {
+/**
+ * Streaming information component for the series modal
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.selectedSeries - The selected series data
+ * @param {Array} props.streaming - Selected streaming providers
+ */
+const StreamingInfo = ({ selectedSeries, streaming }) => {
   const [showAllCountries, setShowAllCountries] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   
@@ -16,41 +25,11 @@ function StreamingInfo({ selectedSeries, streaming }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Filter providers based on selected streaming services
-  const filterProviders = (providerData, allowedProviders) => {
-    if (!allowedProviders || allowedProviders.length === 0) {
-      // If no streaming providers are selected, show all providers
-      return providerData || {};
-    }
-
-    return Object.fromEntries(
-      Object.entries(providerData || {})
-        .map(([country, providers]) => [
-          country,
-          Object.fromEntries(
-            Object.entries(providers).filter(([provider]) =>
-              allowedProviders.includes(provider)
-            )
-          ),
-        ])
-        .filter(([country, providers]) => Object.keys(providers).length > 0)
-    );
-  };
-
   const getStreamingProviders = (selectedSeries) => {
     if (selectedSeries && selectedSeries.provider_data) {
       return filterProviders(selectedSeries.provider_data, streaming);
     }
     return {};
-  };
-
-  // Calculate max seasons for progress bars
-  const calculateMaxSeasons = (providers) => {
-    let max = 0;
-    Object.values(providers).forEach(seasons => {
-      if (parseInt(seasons) > max) max = parseInt(seasons);
-    });
-    return max || 1; // Avoid division by zero
   };
 
   const providersData = getStreamingProviders(selectedSeries);
@@ -128,7 +107,7 @@ function StreamingInfo({ selectedSeries, streaming }) {
           {countryEntries.length > 3 && (
             <div className="show-more-countries">
               <button onClick={() => setShowAllCountries(!showAllCountries)}>
-                {showAllCountries ? "Show Less Countries" : `Show  More Countries`}
+                {showAllCountries ? "Show Less Countries" : `Show More Countries`}
               </button>
             </div>
           )}
@@ -141,6 +120,11 @@ function StreamingInfo({ selectedSeries, streaming }) {
       )}
     </div>
   );
-}
+};
+
+StreamingInfo.propTypes = {
+  selectedSeries: PropTypes.object,
+  streaming: PropTypes.array
+};
 
 export default StreamingInfo;
