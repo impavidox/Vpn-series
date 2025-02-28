@@ -1,0 +1,53 @@
+/* Animated background styling */
+.background-animations {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.2;
+  animation: float 20s ease-in-out infinite;
+}
+
+.orb-cyan {
+  width: 500px;
+  height: 500px;
+  background-color: var(--blue);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.orb-orange {
+  width: 400px;
+  height: 400px;
+  background-color: var(--orange);
+  bottom: 15%;
+  right: 15%;
+  animation-delay: 5s;
+}
+
+.orb-yellow {
+  width: 450px;
+  height: 450px;
+  background-color: var(--yellow);
+  top: 50%;
+  left: 50%;
+  animation-delay: 10s;
+  opacity: 0.15;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(20px, 20px) rotate(5deg); }
+  50% { transform: translate(-10px, 30px) rotate(0deg); }
+  75% { transform: translate(-20px, -10px) rotate(-5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}

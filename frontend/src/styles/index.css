@@ -1,0 +1,154 @@
+/* Define color variables based on the color palette */
+:root {
+    --black: #272727;
+    --yellow: #F9C80E;
+    --blue: #43BCCD;
+    --green: #53DD6C;
+    --orange: #EF8354;
+    
+    --dark-gray: #1e1e1e;
+    --medium-gray: #2e2e2e;
+    --light-gray: #3e3e3e;
+    
+    /* Scrollbar variables */
+    --scrollbar-track: rgba(39, 39, 39, 0.6);
+    --scrollbar-thumb: rgba(239, 131, 84, 0.7);
+    --scrollbar-thumb-hover: rgba(239, 131, 84, 0.9);
+    --scrollbar-border-radius: 8px;
+  }
+  
+  /* Reset margins and paddings */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Global styles */
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    background-color: var(--black);
+    color: white;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    width: 100%;
+  }
+  
+  /* Smooth scrolling for the entire page */
+  html {
+    scroll-behavior: smooth;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
+  body {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior-y: none; /* Prevents bounce effects that can cause scroll issues */
+    max-width: 100vw;
+  }
+  
+  /* Fix for overflow issues with React root */
+  #root {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  }
+  
+  /* Global scrollbar styling */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+  
+  /* WebKit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: var(--scrollbar-border-radius);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--scrollbar-border-radius);
+    transition: background 0.3s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+  
+  /* Global focus styles for accessibility */
+  :focus {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+  
+  /* Reset button styles */
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  button:disabled {
+    cursor: not-allowed;
+  }
+  
+  /* Utility classes */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  /* Fix for modal styling */
+  .modal-overlay {
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  .modal-content {
+    margin: 0 auto;
+  }
+
+
+  /* Global stacking contexts */
+/* These ensure components work together with proper z-index layering */
+#root {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    isolation: isolate; /* Create a new stacking context */
+  }
+  
+  /* Z-index layers for the application */
+  :root {
+    --z-index-background: 0;
+    --z-index-content: 10;
+    --z-index-filter: 20;
+    --z-index-dropdown: 100;
+    --z-index-modal: 1000;
+  }
+  
+  /* Ensure proper stacking of UI elements */
+  .search-page-container {
+    isolation: isolate; /* Create a new stacking context */
+  }

@@ -1,0 +1,241 @@
+/* Genre filter dropdown styling */
+.genre-dropdown {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .genre-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    background-color: rgba(46, 46, 46, 0.7);
+    border: 2px solid rgba(67, 188, 205, 0.3);
+    border-radius: 10px;
+    color: white;
+    padding: 12px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+  
+  .genre-dropdown-toggle:hover {
+    background-color: rgba(46, 46, 46, 0.9);
+    border-color: var(--blue);
+  }
+  
+  .genre-icon {
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  .genre-label {
+    flex: 1;
+    text-align: left;
+  }
+  
+  .dropdown-arrow {
+    font-size: 0.8rem;
+    color: #aaa;
+    transition: transform 0.3s ease;
+  }
+  
+  .genre-dropdown-toggle:hover .dropdown-arrow {
+    color: var(--blue);
+  }
+  
+  /* Portal dropdown styles */
+  .genre-dropdown-menu-portal {
+    background-color: var(--medium-gray);
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.2s ease-out;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-height: 350px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-top: 5px;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .genre-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(35, 35, 35, 0.9);
+  }
+  
+  .genre-menu-header h4 {
+    margin: 0;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .clear-genres {
+    background: none;
+    border: none;
+    color: var(--orange);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+  }
+  
+  .clear-genres:hover {
+    background-color: rgba(239, 131, 84, 0.2);
+    text-decoration: underline;
+  }
+  
+  .genre-options {
+    overflow-y: auto;
+    max-height: 280px;
+    padding: 10px;
+    background-color: var(--medium-gray);
+  }
+  
+  .genre-option {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    margin-bottom: 3px;
+  }
+  
+  .genre-option:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .genre-option.selected {
+    background-color: rgba(67, 188, 205, 0.2);
+    color: white;
+  }
+  
+  .genre-option-icon {
+    margin-right: 10px;
+    font-size: 1.1rem;
+  }
+  
+  .genre-option-name {
+    flex: 1;
+  }
+  
+  .genre-selected-icon {
+    color: var(--blue);
+    font-weight: bold;
+  }
+  
+  /* Selected genres pills */
+  .selected-genres-container {
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .selected-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .genre-pill {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to right, rgba(67, 188, 205, 0.2), rgba(67, 188, 205, 0.1));
+    border: 1px solid rgba(67, 188, 205, 0.3);
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  
+  .genre-pill:hover {
+    background: linear-gradient(to right, rgba(67, 188, 205, 0.3), rgba(67, 188, 205, 0.2));
+  }
+  
+  .genre-pill-icon {
+    margin-right: 5px;
+  }
+  
+  .remove-genre {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 5px;
+    padding: 0 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+  }
+  
+  .remove-genre:hover {
+    color: white;
+  }
+  
+  /* Scrollbar styling for the genre options */
+  .genre-options::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .genre-options::-webkit-scrollbar-track {
+    background: rgba(30, 30, 30, 0.5);
+    border-radius: 10px;
+  }
+  
+  .genre-options::-webkit-scrollbar-thumb {
+    background: rgba(67, 188, 205, 0.5);
+    border-radius: 10px;
+  }
+  
+  .genre-options::-webkit-scrollbar-thumb:hover {
+    background: rgba(67, 188, 205, 0.7);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .genre-dropdown-menu-portal {
+      max-height: 300px;
+    }
+    
+    .genre-options {
+      max-height: 230px;
+    }
+    
+    .genre-pill {
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .genre-dropdown-toggle {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+    }
+    
+    .genre-option {
+      padding: 8px 12px;
+    }
+    
+    .genre-menu-header {
+      padding: 12px;
+    }
+    
+    .genre-menu-header h4 {
+      font-size: 0.9rem;
+    }
+  }
