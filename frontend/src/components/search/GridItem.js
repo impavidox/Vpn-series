@@ -35,7 +35,7 @@ const GridItem = ({ item, onClick }) => {
         <div className="item-hover-content">
           <div className="hover-genres">
             {item.genres && item.genres.length > 0 ? (
-              item.genres.slice(0, 3).map((genre, idx) => (
+              item.genres.slice(0, 2).map((genre, idx) => (
                 <span key={idx} className="hover-genre-tag">{genre}</span>
               ))
             ) : (
@@ -45,8 +45,7 @@ const GridItem = ({ item, onClick }) => {
           <div className="hover-overview">
             {item.plot ? (
               <>
-                {item.plot.substring(0, 150)}
-                {item.plot.length > 150 ? '...' : ''}
+                {item.plot}
               </>
             ) : (
               'No overview available.'
