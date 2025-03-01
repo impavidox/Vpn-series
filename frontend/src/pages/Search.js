@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 // Components
 import AnimatedBackground from '../components/common/AnimatedBackground';
 import SearchHeader from '../components/search/SearchHeader';
-import FilterSection from '../components/search/FilterSection';
 import ResultsGrid from '../components/search/ResultsGrid';
 import SeriesModal from '../components/search/SeriesModal';
 
@@ -14,12 +13,15 @@ import useInfiniteScroll from '../hooks/useInfiniteScroll';
 // Services
 import ApiService from '../services/api';
 
-// Styles
+import '../styles/index.css';
 import '../styles/Search.css';
+import '../styles/HeaderSearchFilter.css'; // Make sure this is imported
+
+// Define our z-index values
+document.documentElement.style.setProperty('--z-index-modal', '2000');
 
 /**
- * Search page component
- * Updated to include genre filtering
+ * Search page component with integrated header search and filter popup
  */
 const Search = () => {
   // Navigation and location
@@ -131,6 +133,15 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Handle header search
+  const handleHeaderSearch = (searchTerm) => {
+    setAppliedTitleFilter(searchTerm);
+    resetPagination();
+    setData([]);
+    setHasMore(true);
+    // Initial load flag reset is handled in the dependency effect
+  };
+
   // Handle filter application
   const handleApplyFilters = (title, year, genres) => {
     setAppliedTitleFilter(title);
@@ -162,21 +173,17 @@ const Search = () => {
       {/* Animated background */}
       <AnimatedBackground />
 
-      {/* Header section */}
+      {/* Header section with integrated search */}
       <SearchHeader 
         animationComplete={animationComplete}
         country={country}
         selectedStreamingProviders={selectedStreamingProviders}
         onLogoClick={handleBackToHome}
+        titleFilter={appliedTitleFilter}
+        onSearch={handleHeaderSearch}
       />
 
-      {/* Filter section with genre filter */}
-      <FilterSection 
-        animationComplete={animationComplete}
-        onApplyFilters={handleApplyFilters}
-      />
-
-      {/* Results grid */}
+      {/* Results grid with filter popup trigger */}
       <ResultsGrid 
         data={data}
         isLoading={isLoading}
@@ -187,6 +194,7 @@ const Search = () => {
         appliedGenreFilter={appliedGenreFilter}
         animationComplete={animationComplete}
         onItemClick={handleItemClick}
+        onApplyFilters={handleApplyFilters}
         loaderRef={loaderRef}
       />
 

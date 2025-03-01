@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import GridItem from './GridItem';
 import InfiniteScrollLoader from './InfiniteScrollLoader';
+import FilterTrigger from './FilterTrigger';
+import FilterPopup from './FilterPopup';
 import { formatResultsCount } from '../../utils/helpers';
 import { GENRES } from '../../constants/genres';
 
 /**
- * Grid component for displaying search results
- * Updated with support for genre filtering
+ * Updated Grid component for displaying search results with filter popup
  * 
  * @param {Object} props - Component props
  * @param {Array} props.data - Array of search results
@@ -19,6 +20,7 @@ import { GENRES } from '../../constants/genres';
  * @param {Array} props.appliedGenreFilter - Applied genre filters
  * @param {boolean} props.animationComplete - Whether animations are complete
  * @param {Function} props.onItemClick - Function to call when an item is clicked
+ * @param {Function} props.onApplyFilters - Function to call when filters are applied
  * @param {React.RefObject} props.loaderRef - Ref for the loader element
  */
 const ResultsGrid = ({
@@ -31,11 +33,22 @@ const ResultsGrid = ({
   appliedGenreFilter = [],
   animationComplete = false,
   onItemClick,
+  onApplyFilters,
   loaderRef
 }) => {
+  // State for filter popup
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
+  
   // Ensure we have a valid data array
   const safeData = Array.isArray(data) ? data : [];
   const formattedResultsCount = formatResultsCount(totalResults, safeData.length);
+
+  // Calculate active filters count
+  const activeFiltersCount = (
+    (appliedTitleFilter ? 1 : 0) + 
+    (appliedYearFilter ? 1 : 0) + 
+    appliedGenreFilter.length
+  );
 
   // Get genre names for display
   const getGenreNames = () => {
@@ -51,33 +64,60 @@ const ResultsGrid = ({
   
   const genreString = getGenreNames();
 
+  // Handle applying filters from the popup
+  const handleApplyFilters = (title, year, genres) => {
+    if (onApplyFilters) {
+      onApplyFilters(title, year, genres);
+    }
+    setIsFilterPopupOpen(false);
+  };
+
   return (
     <div className={`results-section ${animationComplete ? 'animate-in' : ''}`}>
       <div className="results-header">
-        <h2>
-          {safeData.length > 0 ? (
-            <>
-              <span className="results-count">{formattedResultsCount}</span> shows found
-              {appliedTitleFilter && ` for "${appliedTitleFilter}"`}
-              {appliedYearFilter && ` in ${appliedYearFilter}`}
-              {genreString && ` in genres: ${genreString}`}
-              {totalResults !== '1000+' && safeData.length < totalResults && 
-                <span className="showing-count"> (Showing {safeData.length})</span>
-              }
-              {totalResults === '1000+' && 
-                <span className="showing-count"> (Showing {safeData.length})</span>
-              }
-            </>
-          ) : isLoading && safeData.length === 0 ? (
-            'Searching for content...'
-          ) : (
-            'Ready to discover shows'
-          )}
-        </h2>
+        <div className="results-filter-container">
+          <h2>
+            {safeData.length > 0 ? (
+              <>
+                <span className="results-count">{formattedResultsCount}</span> shows found
+                {appliedTitleFilter && ` for "${appliedTitleFilter}"`}
+                {appliedYearFilter && ` in ${appliedYearFilter}`}
+                {genreString && ` in genres: ${genreString}`}
+                {totalResults !== '1000+' && safeData.length < totalResults && 
+                  <span className="showing-count"> (Showing {safeData.length})</span>
+                }
+                {totalResults === '1000+' && 
+                  <span className="showing-count"> (Showing {safeData.length})</span>
+                }
+              </>
+            ) : isLoading && safeData.length === 0 ? (
+              'Searching for content...'
+            ) : (
+              'Ready to discover shows'
+            )}
+          </h2>
+          
+          <FilterTrigger 
+            activeFiltersCount={activeFiltersCount}
+            onClick={() => setIsFilterPopupOpen(true)}
+          />
+        </div>
       </div>
 
-      {/* Applied filters display */}
-      {(appliedTitleFilter || appliedYearFilter || appliedGenreFilter.length > 0) && (
+      {/* Filter popup with proper content and positioning */}
+      {isFilterPopupOpen && (
+        <FilterPopup 
+          isOpen={isFilterPopupOpen}
+          onClose={() => setIsFilterPopupOpen(false)}
+          titleFilter={appliedTitleFilter}
+          yearFilter={appliedYearFilter}
+          selectedGenres={appliedGenreFilter}
+          onApplyFilters={handleApplyFilters}
+        />
+      )}
+
+      {/* Applied filters display (optional - can be removed if you prefer to only show in results header) */}
+      {activeFiltersCount > 0 && (
         <div className="applied-filters">
           <div className="applied-filters-title">Active filters:</div>
           <div className="applied-filters-list">
@@ -163,6 +203,7 @@ ResultsGrid.propTypes = {
   appliedGenreFilter: PropTypes.array,
   animationComplete: PropTypes.bool,
   onItemClick: PropTypes.func.isRequired,
+  onApplyFilters: PropTypes.func.isRequired,
   loaderRef: PropTypes.object
 };
 
