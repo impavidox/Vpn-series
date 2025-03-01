@@ -42,7 +42,7 @@ const GridItem = ({ item, onClick }) => {
               <span className="hover-genre-tag">Unknown Genre</span>
             )}
           </div>
-          <div className="hover-overview">
+          {/* <div className="hover-overview">
             {item.plot ? (
               <>
                 {item.plot}
@@ -50,7 +50,7 @@ const GridItem = ({ item, onClick }) => {
             ) : (
               'No overview available.'
             )}
-          </div>
+          </div> */}
         </div>
       </div>
       

@@ -529,3 +529,93 @@
       font-size: 1.5rem;
     }
   }
+
+  /* ============== HOME SCREEN MOBILE FIXES ============== */
+/* Update to Home.css */
+
+/* Adjust container positioning for mobile */
+@media (max-width: 768px) {
+  .welcome-container,
+  .continent-container, 
+  .country-container,
+  .streaming-container {
+    padding: 25px;
+    width: 90%; /* Increased from 85% for better fit */
+    max-height: 90vh; /* Limit height to prevent overflow */
+    overflow-y: auto; /* Add scrolling if needed */
+  }
+  
+  .logo {
+    font-size: 2.2rem; /* Adjusted for better visibility */
+  }
+  
+  .welcome-title,
+  .section-title {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+  }
+  
+  .welcome-description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  .feature-box {
+    padding: 12px;
+  }
+  
+  .feature-content h3 {
+    font-size: 0.95rem;
+  }
+  
+  .feature-content p {
+    font-size: 0.8rem;
+  }
+}
+
+/* Smaller mobile screens */
+@media (max-width: 480px) {
+  .welcome-container,
+  .continent-container, 
+  .country-container,
+  .streaming-container {
+    padding: 20px 15px; /* Reduced padding */
+    width: 92%; /* Further increased for better fit */
+    border-radius: 16px; /* Slightly smaller radius */
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+  }
+  
+  .logo-tagline {
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+  }
+  
+  .welcome-title,
+  .section-title {
+    font-size: 1.2rem;
+  }
+  
+  .continent-grid {
+    grid-template-columns: 1fr; /* Single column layout for smallest screens */
+    gap: 12px;
+  }
+  
+  .continent-name {
+    font-size: 0.9rem;
+  }
+  
+  .continent-icon {
+    font-size: 2rem;
+  }
+  
+  .discover-button,
+  .explore-button,
+  .next-button,
+  .back-button {
+    font-size: 0.85rem;
+    padding: 10px 15px;
+  }
+}

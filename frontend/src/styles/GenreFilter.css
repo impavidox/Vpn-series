@@ -46,18 +46,27 @@
     color: var(--blue);
   }
   
-  /* Portal dropdown styles */
+  /* Fix for dropdown positioning and visibility */
   .genre-dropdown-menu-portal {
-    background-color: var(--medium-gray);
-    border-radius: 10px;
+    position: absolute;
+    top: calc(100% + 5px) !important; /* Force dropdown to appear below the button */
+    left: 0 !important; /* Align with left edge of button */
+    width: 100% !important; /* Match width of button */
+    max-width: 100vw; /* Prevent overflow outside viewport */
+    z-index: 100;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.2s ease-out;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: visible !important;
+    background: rgba(46, 46, 46, 0.95);
     max-height: 350px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    margin-top: 5px;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  /* Ensure dropdown stays within viewport */
+  @media (max-width: 768px) {
+    .genre-dropdown-menu-portal {
+      max-width: calc(100vw - 40px);
+      max-height: 300px;
+    }
   }
   
   @keyframes fadeIn {

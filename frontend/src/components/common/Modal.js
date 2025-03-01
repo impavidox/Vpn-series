@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import '../../styles/Modal.css';
 
 /**
- * Reusable modal component
+ * Reusable modal component with fixed close button alignment
  * 
  * @param {Object} props - Component props
  * @param {boolean} props.isOpen - Whether the modal is open
@@ -26,15 +26,33 @@ const Modal = ({ isOpen, onClose, children, className = '' }) => {
     };
   }, [isOpen]);
 
+  // Add escape key handling
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleEscape);
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} aria-modal="true" role="dialog">
       <div 
         className={`modal-content ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="close-button" onClick={onClose}>
+        <button 
+          className="close-button" 
+          onClick={onClose}
+          aria-label="Close modal"
+        >
           <span>×</span>
         </button>
         {children}

@@ -12,7 +12,7 @@ const Logo = ({ showTagline = false, onClick }) => {
     <div className="logo-container" onClick={onClick}>
       <h1 className="logo">
         <span className="logo-part-1">Beyond</span>
-        <span className="logo-part-2">Flix</span>
+        <span className="logo-part-2">VPN</span>
         <span className="logo-emoji">🌍</span>
       </h1>
       {showTagline && <div className="logo-tagline">GO BEYOND BORDERS</div>}
