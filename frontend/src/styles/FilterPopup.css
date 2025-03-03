@@ -321,3 +321,418 @@
       font-size: 0.9rem;
     }
   }
+
+  /* Filter Popup - Mobile Fix */
+.filter-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-index-modal);
+  animation: fadeIn 0.2s ease-out;
+  overflow: hidden; /* Prevent overflow */
+  box-sizing: border-box;
+  padding: 10px; /* Add some padding */
+}
+
+.filter-popup {
+  background: linear-gradient(to bottom, rgba(30, 30, 30, 0.95), rgba(25, 25, 25, 0.95));
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh; /* Increase max height on mobile */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+.filter-popup-content {
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  flex: 1;
+  max-height: calc(90vh - 140px); /* Adjust based on header and footer heights */
+}
+
+/* Genre checkboxes - fix for mobile */
+.genre-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%; /* Ensure full width */
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .filter-popup {
+    width: 95%;
+    border-radius: 15px;
+  }
+  
+  .filter-popup-header,
+  .filter-popup-footer {
+    padding: 15px;
+  }
+  
+  .filter-popup-content {
+    padding: 15px;
+    max-height: calc(90vh - 130px);
+  }
+  
+  .genre-checkboxes {
+    grid-template-columns: 1fr; /* Single column for very small screens */
+    gap: 8px;
+  }
+  
+  .filter-section h4 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .popup-filter-input {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .genre-checkbox label {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+  
+  .apply-filters-btn,
+  .clear-filters-btn {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Filter popup horizontal scroll fix */
+.filter-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-index-modal);
+  overflow: hidden; /* Prevent scroll on the overlay */
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.filter-popup {
+  background: linear-gradient(to bottom, rgba(30, 30, 30, 0.95), rgba(25, 25, 25, 0.95));
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden; /* Hide overflow */
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+}
+
+.filter-popup-content {
+  padding: 15px;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  flex: 1;
+  max-height: calc(90vh - 130px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-section {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevent section overflow */
+}
+
+.filter-input-group {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.popup-filter-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Force fixed width on mobile */
+@media (max-width: 480px) {
+  .filter-popup {
+    width: 92%;
+    left: 4%;
+    right: 4%;
+    max-width: none;
+  }
+  
+  .filter-popup-header,
+  .filter-popup-footer {
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .filter-popup-content {
+    padding: 12px;
+  }
+  
+  .filter-section h4 {
+    font-size: 1rem;
+  }
+  
+  .popup-filter-input {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .apply-filters-btn,
+  .clear-filters-btn {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Genre Dropdown Select Styles */
+.genre-dropdown-select {
+  width: 100%;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.genre-input-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.genre-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(46, 46, 46, 0.5);
+  border: 2px solid rgba(67, 188, 205, 0.3);
+  border-radius: 10px;
+  color: white;
+  padding: 12px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.genre-select-trigger.active {
+  border-color: var(--blue);
+  background-color: rgba(46, 46, 46, 0.8);
+  box-shadow: 0 0 0 2px rgba(67, 188, 205, 0.2);
+}
+
+.genre-trigger-text {
+  color: #ddd;
+}
+
+.dropdown-icon {
+  color: #999;
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.genre-select-trigger.active .dropdown-icon {
+  transform: rotate(180deg);
+  color: var(--blue);
+}
+
+.selected-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--orange);
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Dropdown menu */
+.genre-options-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: rgba(46, 46, 46, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  border: 1px solid rgba(67, 188, 205, 0.2);
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(35, 35, 35, 0.9);
+}
+
+.dropdown-header h4 {
+  margin: 0;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.clear-genres {
+  background: none;
+  border: none;
+  color: var(--orange);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.clear-genres:hover {
+  background-color: rgba(239, 131, 84, 0.2);
+  text-decoration: underline;
+}
+
+.genre-options-list {
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 10px 0;
+  background-color: var(--medium-gray);
+}
+
+.genre-option {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.genre-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.genre-option.selected {
+  background-color: rgba(67, 188, 205, 0.2);
+  color: white;
+}
+
+.genre-option-icon {
+  margin-right: 10px;
+  font-size: 1.1rem;
+}
+
+.genre-option-name {
+  flex: 1;
+}
+
+.genre-selected-icon {
+  color: var(--blue);
+  font-weight: bold;
+}
+
+/* Selected genres chips */
+.selected-genres-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.genre-chip {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(to right, rgba(67, 188, 205, 0.2), rgba(67, 188, 205, 0.1));
+  border: 1px solid rgba(67, 188, 205, 0.3);
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.genre-chip:hover {
+  background: linear-gradient(to right, rgba(67, 188, 205, 0.3), rgba(67, 188, 205, 0.2));
+}
+
+.genre-chip-icon {
+  margin-right: 5px;
+}
+
+.remove-genre {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 5px;
+  padding: 0 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.remove-genre:hover {
+  color: white;
+}
+
+/* Scrollbar styling */
+.genre-options-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.genre-options-list::-webkit-scrollbar-track {
+  background: rgba(30, 30, 30, 0.5);
+  border-radius: 10px;
+}
+
+.genre-options-list::-webkit-scrollbar-thumb {
+  background: rgba(67, 188, 205, 0.5);
+  border-radius: 10px;
+}
+
+.genre-options-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(67, 188, 205, 0.7);
+}

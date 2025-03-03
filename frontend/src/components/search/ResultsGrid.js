@@ -79,16 +79,15 @@ const ResultsGrid = ({
           <h2>
             {safeData.length > 0 ? (
               <>
-                <span className="results-count">{formattedResultsCount}</span> shows found
+                <span className="results-count-container">
+                  <span className="results-count">{formattedResultsCount}</span> shows found
+                </span>
                 {appliedTitleFilter && ` for "${appliedTitleFilter}"`}
                 {appliedYearFilter && ` in ${appliedYearFilter}`}
                 {genreString && ` in genres: ${genreString}`}
-                {totalResults !== '1000+' && safeData.length < totalResults && 
-                  <span className="showing-count"> (Showing {safeData.length})</span>
-                }
-                {totalResults === '1000+' && 
-                  <span className="showing-count"> (Showing {safeData.length})</span>
-                }
+                {(totalResults !== '1000+' && safeData.length < totalResults) || totalResults === '1000+' ? (
+                  <span className="showing-count">Showing {safeData.length}</span>
+                ) : null}
               </>
             ) : isLoading && safeData.length === 0 ? (
               'Searching for content...'
@@ -114,40 +113,6 @@ const ResultsGrid = ({
           selectedGenres={appliedGenreFilter}
           onApplyFilters={handleApplyFilters}
         />
-      )}
-
-      {/* Applied filters display (optional - can be removed if you prefer to only show in results header) */}
-      {activeFiltersCount > 0 && (
-        <div className="applied-filters">
-          <div className="applied-filters-title">Active filters:</div>
-          <div className="applied-filters-list">
-            {appliedTitleFilter && (
-              <div className="applied-filter-tag">
-                <span className="filter-tag-icon">🔍</span>
-                <span>Title: {appliedTitleFilter}</span>
-              </div>
-            )}
-            
-            {appliedYearFilter && (
-              <div className="applied-filter-tag">
-                <span className="filter-tag-icon">📅</span>
-                <span>Year: {appliedYearFilter}</span>
-              </div>
-            )}
-            
-            {appliedGenreFilter.map(genreId => {
-              const genre = GENRES.find(g => g.id === genreId);
-              if (!genre) return null;
-              
-              return (
-                <div key={genreId} className="applied-filter-tag genre-tag">
-                  <span className="filter-tag-icon">{genre.icon}</span>
-                  <span>{genre.name}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
       )}
 
       <div className="grid-container">

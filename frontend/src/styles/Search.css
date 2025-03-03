@@ -1025,3 +1025,233 @@
     margin-right: 5px;
     font-size: 1.1rem;
   }
+
+  /* Results Grid - Mobile Fix for 3 items per row */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  
+  .image-container {
+    height: 220px;
+  }
+  
+  .series-title {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile grid with 3 items per row */
+@media (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  
+  .image-container {
+    height: 160px;
+  }
+  
+  .series-title {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 1; /* Show only one line */
+  }
+  
+  .series-year {
+    font-size: 0.75rem;
+  }
+  
+  .rating-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    top: 5px;
+    right: 5px;
+  }
+  
+  .info-container {
+    padding: 10px;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+  .image-container {
+    height: 140px;
+  }
+}
+
+/* Results Header - Mobile Fix */
+.results-header {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.results-header h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  font-weight: 500;
+  text-align: left;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.results-count {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.showing-count {
+  font-size: 0.85em;
+  color: #aaa;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* Fixed container for filters and results count */
+.results-filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .results-header h2 {
+    font-size: 1.3rem;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .results-header h2 {
+    font-size: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+  
+  .results-filter-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .filter-trigger-button {
+    position: static;
+    transform: none;
+    align-self: flex-end;
+    margin-top: -30px; /* Pull up to be on same line */
+  }
+  
+  /* Show counts on a new line */
+  .showing-count {
+    display: block;
+    margin-left: 0;
+    margin-top: 2px;
+  }
+}
+
+/* Improved Results Count Display */
+.results-header {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.results-header h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  color: #fff;
+  font-weight: 500;
+}
+
+.results-count-container {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(46, 46, 46, 0.7);
+  border-radius: 10px;
+  padding: 4px 10px;
+  margin-right: 4px;
+  border: 1px solid rgba(239, 131, 84, 0.3);
+}
+
+.results-count {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.showing-count {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(46, 46, 46, 0.5);
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 0.85em;
+  color: #aaa;
+  margin-left: 4px;
+  border: 1px solid rgba(67, 188, 205, 0.3);
+}
+
+/* Results filter container with better spacing */
+.results-filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .results-header h2 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .results-header h2 {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .results-filter-container {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .filter-trigger-button {
+    margin-left: auto;
+  }
+  
+  .results-count-container, 
+  .showing-count {
+    font-size: 0.9em;
+    padding: 3px 6px;
+  }
+}

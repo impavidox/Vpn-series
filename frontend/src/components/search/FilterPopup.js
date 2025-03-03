@@ -4,7 +4,275 @@ import PropTypes from 'prop-types';
 import { GENRES } from '../../constants/genres';
 
 /**
+ * Genre dropdown select component for mobile filter popup
+ * Uses inline styles to ensure compatibility with overflowing dropdown
+ */
+const GenreDropdownSelect = ({ selectedGenres = [], onGenreChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const triggerRef = React.useRef(null);
+  
+  // Calculate dropdown position on open
+  useEffect(() => {
+    if (isOpen && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left,
+        width: rect.width
+      });
+    }
+  }, [isOpen]);
+  
+  // Close dropdown if user clicks outside
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (isOpen && triggerRef.current && !triggerRef.current.contains(e.target) && 
+          !e.target.closest('.genre-dropdown-menu')) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [isOpen]);
+
+  // Toggle genre selection
+  const handleGenreSelect = (genreId) => {
+    if (selectedGenres.includes(genreId)) {
+      onGenreChange(selectedGenres.filter(id => id !== genreId));
+    } else {
+      onGenreChange([...selectedGenres, genreId]);
+    }
+  };
+
+  // Get count and summary of selected genres
+  const selectedCount = selectedGenres.length;
+  const getSelectedGenreSummary = () => {
+    if (selectedCount === 0) return 'Select genres...';
+    if (selectedCount === 1) {
+      const genre = GENRES.find(g => g.id === selectedGenres[0]);
+      return genre ? genre.name : 'One genre selected';
+    }
+    return `${selectedCount} genres selected`;
+  };
+
+  const dropdownContainerStyle = {
+    width: '100%',
+    marginBottom: '15px',
+    position: 'relative'
+  };
+
+  const labelStyle = {
+    display: 'block',
+    marginBottom: '6px',
+    color: '#ccc',
+    fontSize: '0.9rem'
+  };
+
+  const dropdownTriggerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#3e3e3e',
+    border: `1px solid ${isOpen ? '#43BCCD' : '#555'}`,
+    borderRadius: '5px',
+    color: 'white',
+    padding: '10px 15px',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    width: '100%',
+    boxSizing: 'border-box',
+    position: 'relative'
+  };
+
+  const dropdownIconStyle = {
+    color: '#999',
+    fontSize: '0.8rem',
+    transition: 'transform 0.3s ease',
+    transform: isOpen ? 'rotate(180deg)' : 'none'
+  };
+
+  const countBadgeStyle = {
+    position: 'absolute',
+    top: '-8px',
+    right: '-8px',
+    background: '#EF8354',
+    color: 'white',
+    borderRadius: '50%',
+    width: '22px',
+    height: '22px',
+    fontSize: '0.75rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold'
+  };
+
+  // Styles for the dropdown menu portal
+  const dropdownMenuStyle = {
+    position: 'fixed',
+    top: `${dropdownPosition.top}px`,
+    left: `${dropdownPosition.left}px`,
+    width: `${dropdownPosition.width}px`,
+    background: '#272727',
+    borderRadius: '5px',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
+    zIndex: 10000, // Higher z-index to overflow the popup
+    border: '1px solid #43BCCD',
+    overflow: 'hidden'
+  };
+
+  const dropdownHeaderStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '10px 15px',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#1e1e1e'
+  };
+
+  const clearButtonStyle = {
+    background: 'none',
+    border: 'none',
+    color: '#EF8354',
+    fontSize: '0.9rem',
+    cursor: 'pointer',
+    padding: '3px 8px'
+  };
+
+  const optionsListStyle = {
+    maxHeight: '250px',
+    overflowY: 'auto',
+    padding: '10px 0',
+    margin: 0
+  };
+
+  const optionStyle = (isSelected) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: '8px 15px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    backgroundColor: isSelected ? 'rgba(67, 188, 205, 0.2)' : 'transparent',
+    color: 'white',
+    listStyle: 'none'
+  });
+
+  const optionIconStyle = {
+    marginRight: '10px',
+    fontSize: '1.1rem'
+  };
+
+  const selectedIconStyle = {
+    color: '#43BCCD',
+    fontWeight: 'bold',
+    marginLeft: 'auto'
+  };
+
+  const chipsContainerStyle = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
+    marginTop: '12px'
+  };
+
+  const chipStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'rgba(67, 188, 205, 0.2)',
+    border: '1px solid rgba(67, 188, 205, 0.3)',
+    borderRadius: '20px',
+    padding: '5px 10px',
+    fontSize: '0.85rem',
+    color: 'white'
+  };
+
+  const removeButtonStyle = {
+    background: 'none',
+    border: 'none',
+    color: '#aaa',
+    fontSize: '1.2rem',
+    cursor: 'pointer',
+    marginLeft: '5px',
+    padding: '0 3px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
+
+  return (
+    <div style={dropdownContainerStyle} className="genre-dropdown-container">
+      <label style={labelStyle}>Genres</label>
+      
+      {/* Dropdown trigger button */}
+      <div 
+        ref={triggerRef}
+        style={dropdownTriggerStyle}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span style={{color: selectedCount > 0 ? 'white' : '#aaa'}}>
+          {getSelectedGenreSummary()}
+        </span>
+        <span style={dropdownIconStyle}>▼</span>
+        
+        {selectedCount > 0 && (
+          <span style={countBadgeStyle}>{selectedCount}</span>
+        )}
+      </div>
+      
+      {/* Dropdown menu as portal */}
+      {isOpen && createPortal(
+        <div className="genre-dropdown-menu" style={dropdownMenuStyle}>
+          <div style={dropdownHeaderStyle}>
+            <h4 style={{margin: 0, color: 'white', fontSize: '1rem'}}>Select Genres</h4>
+            {selectedCount > 0 && (
+              <button 
+                style={clearButtonStyle}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onGenreChange([]);
+                }}
+              >
+                Clear All
+              </button>
+            )}
+          </div>
+          
+          <ul style={optionsListStyle}>
+            {GENRES.map((genre) => (
+              <li 
+                key={genre.id} 
+                style={optionStyle(selectedGenres.includes(genre.id))}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleGenreSelect(genre.id);
+                }}
+              >
+                <span style={optionIconStyle}>{genre.icon}</span>
+                <span style={{flex: 1}}>{genre.name}</span>
+                {selectedGenres.includes(genre.id) && (
+                  <span style={selectedIconStyle}>✓</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>,
+        document.body
+      )}
+      
+    </div>
+  );
+};
+
+GenreDropdownSelect.propTypes = {
+  selectedGenres: PropTypes.array,
+  onGenreChange: PropTypes.func.isRequired
+};
+
+/**
  * Filter popup component using React Portal to ensure proper viewport positioning
+ * Updated with mobile-friendly genre dropdown that overflows the popup
  */
 const FilterPopup = ({ 
   isOpen, 
@@ -66,7 +334,8 @@ const FilterPopup = ({
     justifyContent: 'center',
     alignItems: 'center',
     boxSizing: 'border-box',
-    padding: '20px'
+    padding: '20px',
+    overflow: 'hidden' // Prevent scrolling on the overlay
   };
 
   const popupStyle = {
@@ -77,9 +346,10 @@ const FilterPopup = ({
     boxShadow: '0 0 30px rgba(0, 0, 0, 0.8)',
     display: 'flex',
     flexDirection: 'column',
-    maxHeight: '80vh',
+    maxHeight: '90vh',
     overflow: 'hidden',
-    border: '1px solid #43BCCD'
+    border: '1px solid #43BCCD',
+    margin: '0 auto'
   };
 
   const headerStyle = {
@@ -88,7 +358,9 @@ const FilterPopup = ({
     alignItems: 'center',
     padding: '15px 20px',
     borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-    backgroundColor: '#1e1e1e'
+    backgroundColor: '#1e1e1e',
+    width: '100%',
+    boxSizing: 'border-box'
   };
 
   const closeButtonStyle = {
@@ -108,9 +380,12 @@ const FilterPopup = ({
   const contentStyle = {
     padding: '20px',
     overflowY: 'auto',
+    overflowX: 'hidden', // Prevent horizontal scroll
     backgroundColor: '#272727',
-    maxHeight: 'calc(80vh - 120px)', // Account for header and footer
-    flex: '1'
+    maxHeight: 'calc(90vh - 120px)', // Account for header and footer
+    flex: '1',
+    width: '100%',
+    boxSizing: 'border-box'
   };
 
   const footerStyle = {
@@ -118,7 +393,9 @@ const FilterPopup = ({
     justifyContent: 'space-between',
     padding: '15px 20px',
     borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-    backgroundColor: '#1e1e1e'
+    backgroundColor: '#1e1e1e',
+    width: '100%',
+    boxSizing: 'border-box'
   };
 
   const applyButtonStyle = {
@@ -147,7 +424,8 @@ const FilterPopup = ({
     backgroundColor: '#3e3e3e',
     border: '1px solid #43BCCD',
     borderRadius: '5px',
-    color: 'white'
+    color: 'white',
+    boxSizing: 'border-box'
   };
 
   const labelStyle = {
@@ -157,7 +435,9 @@ const FilterPopup = ({
   };
 
   const sectionStyle = {
-    marginBottom: '20px'
+    marginBottom: '20px',
+    width: '100%',
+    boxSizing: 'border-box'
   };
 
   const sectionTitleStyle = {
@@ -211,34 +491,10 @@ const FilterPopup = ({
           
           <div style={sectionStyle}>
             <h4 style={sectionTitleStyle}>Genres</h4>
-            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px'}}>
-              {GENRES.slice(0, 8).map((genre) => (
-                <div key={genre.id} style={{
-                  padding: '8px', 
-                  backgroundColor: localGenres.includes(genre.id) ? 'rgba(239, 131, 84, 0.2)' : '#3e3e3e',
-                  borderRadius: '5px', 
-                  marginBottom: '5px',
-                  border: localGenres.includes(genre.id) ? '1px solid #EF8354' : '1px solid transparent'
-                }}>
-                  <label style={{display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'white', width: '100%'}}>
-                    <input
-                      type="checkbox"
-                      checked={localGenres.includes(genre.id)}
-                      onChange={() => {
-                        if (localGenres.includes(genre.id)) {
-                          setLocalGenres(localGenres.filter(id => id !== genre.id));
-                        } else {
-                          setLocalGenres([...localGenres, genre.id]);
-                        }
-                      }}
-                      style={{marginRight: '8px'}}
-                    />
-                    <span style={{marginRight: '5px'}}>{genre.icon}</span>
-                    {genre.name}
-                  </label>
-                </div>
-              ))}
-            </div>
+            <GenreDropdownSelect 
+              selectedGenres={localGenres}
+              onGenreChange={setLocalGenres}
+            />
           </div>
         </div>
         

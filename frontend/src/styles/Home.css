@@ -619,3 +619,57 @@
     padding: 10px 15px;
   }
 }
+
+
+/* Continent grid styles */
+.continent-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 800px;
+  width: 100%;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .continent-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .continent-item {
+    aspect-ratio: 1/0.8; /* Slightly less tall on tablets */
+  }
+  
+  .continent-icon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .continent-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .continent-item {
+    aspect-ratio: 1/0.75; /* Even less tall on mobile */
+  }
+  
+  .continent-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  
+  .continent-name {
+    font-size: 0.9rem;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+  .continent-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
