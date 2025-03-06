@@ -45,7 +45,7 @@ try:
     logger.info(f"Connected to MongoDB: {MONGO_DB}.{MONGO_COLLECTION}")
     
     # Create indexes for efficient querying
-    collection.create_index("id", unique=True)
+    collection.create_index("id", unique=True)  # TMDB ID
     collection.create_index("enrichment_status")
     collection.create_index("provider_status")
     collection.create_index([("enrichment_status", 1), ("enrichment_updated_at", 1)])
@@ -110,10 +110,6 @@ def batch_write_to_mongodb(items, update=False):
             logger.info(f"Bulk updated {result.modified_count} items in MongoDB")
         else:
             # For new items, use insert_many with ordered=False to continue on error
-            # First convert id to _id for MongoDB
-            for item in items:
-                item['_id'] = item['id']
-            
             result = collection.insert_many(items, ordered=False)
             logger.info(f"Inserted {len(result.inserted_ids)} items to MongoDB")
     except BulkWriteError as bwe:
@@ -131,19 +127,18 @@ def batch_write_to_mongodb(items, update=False):
                 if update:
                     # For update operations
                     collection.update_one(
-                        {"_id": item['filter']['_id']},
+                        {"id": item['filter']['id']},  # Use TMDB id for matching
                         item['update']
                     )
                 else:
                     # For insert operations
-                    item['_id'] = item['id']
                     collection.insert_one(item)
                 successful += 1
             except Exception as e2:
                 logger.error(f"Failed to write item {item.get('id', 'unknown')}: {e2}")
         
         logger.info(f"Completed {successful}/{len(items)} individual writes")
-
+        
 def fetch_with_retry(url, max_retries=3, backoff_factor=1.5):
     """Fetch data from URL with retry and exponential backoff."""
     retries = 0
@@ -202,7 +197,7 @@ def discover_and_store(pages_range):
                 # If item doesn't exist, add it to our new items batch
                 if not existing:
                     new_items.append({
-                        'id': tmdb_id,  # MongoDB will convert to _id
+                        'id': tmdb_id,  # Preserve TMDB ID as a separate field
                         'title': item['name'],
                         'enrichment_status': 'NEEDS_UPDATE',
                         'provider_status': 'NEEDS_UPDATE',
@@ -237,13 +232,10 @@ def fetch_series_needing_enrichment_refresh():
         # First, query items with enrichment_status = 'NEEDS_UPDATE'
         cursor = collection.find(
             {"enrichment_status": "NEEDS_UPDATE"}, 
-            {"_id": 1, "id": 1, "title": 1, "number_of_seasons": 1}
+            {"id": 1, "title": 1, "number_of_seasons": 1}
         )
         
         for doc in cursor:
-            # Ensure id field exists (MongoDB uses _id internally)
-            if '_id' in doc and 'id' not in doc:
-                doc['id'] = doc['_id']
             series_list.append(doc)
         
         # Next, query items that are outdated
@@ -252,12 +244,10 @@ def fetch_series_needing_enrichment_refresh():
                 "enrichment_status": "UPDATED",
                 "enrichment_updated_at": {"$lt": threshold_time}
             },
-            {"_id": 1, "id": 1, "title": 1, "number_of_seasons": 1}
+            {"id": 1, "title": 1, "number_of_seasons": 1}
         )
         
         for doc in cursor:
-            if '_id' in doc and 'id' not in doc:
-                doc['id'] = doc['_id']
             series_list.append(doc)
             
     except Exception as e:
@@ -280,12 +270,10 @@ def fetch_series_needing_provider_refresh():
         # First, query items with provider_status = 'NEEDS_UPDATE'
         cursor = collection.find(
             {"provider_status": "NEEDS_UPDATE"}, 
-            {"_id": 1, "id": 1, "title": 1, "number_of_seasons": 1}
+            {"id": 1, "title": 1, "number_of_seasons": 1}
         )
         
         for doc in cursor:
-            if '_id' in doc and 'id' not in doc:
-                doc['id'] = doc['_id']
             series_list.append(doc)
         
         # Next, query items that are outdated
@@ -294,12 +282,10 @@ def fetch_series_needing_provider_refresh():
                 "provider_status": "UPDATED",
                 "provider_updated_at": {"$lt": threshold_time}
             },
-            {"_id": 1, "id": 1, "title": 1, "number_of_seasons": 1}
+            {"id": 1, "title": 1, "number_of_seasons": 1}
         )
         
         for doc in cursor:
-            if '_id' in doc and 'id' not in doc:
-                doc['id'] = doc['_id']
             series_list.append(doc)
             
     except Exception as e:
@@ -356,7 +342,7 @@ def enrich_series_data(series_batch):
             }
             
             updates.append(UpdateOne(
-                {"_id": series_id},
+                {"id": series_id},  # Use TMDB ID for matching
                 {"$set": update_data}
             ))
             
@@ -448,11 +434,18 @@ def process_provider_data(series_batch):
             formatted_data = {}
             for country, providers in aggregated_data.items():
                 if providers:  # Only include countries with data
-                    formatted_data[country] = list(providers.values())
+                    country_providers = {}
+                    for provider_info in providers.values():
+                        # Extract provider name to use as key
+                        provider_name = provider_info.pop('provider_name')
+                        # Add the rest of the provider info as the value
+                        country_providers[provider_name] = provider_info
+                    
+                    formatted_data[country] = country_providers
             
             # Prepare the update
             updates.append(UpdateOne(
-                {"_id": series_id},
+                {"id": series_id},  # Use TMDB ID for matching
                 {"$set": {
                     "provider_data": formatted_data,
                     "provider_updated_at": current_time,
@@ -514,8 +507,8 @@ def update_index_fields():
     logger.info("Starting index field update process - fetching existing items")
     
     try:
-        cursor = collection.find({}, {"_id": 1})
-        item_ids = [doc["_id"] for doc in cursor]
+        cursor = collection.find({}, {"id": 1})
+        item_ids = [doc["id"] for doc in cursor]
         
         logger.info(f"Found {len(item_ids)} items to check for index fields")
         
@@ -529,7 +522,7 @@ def update_index_fields():
             
             # Check each item
             for item_id in batch_ids:
-                item = collection.find_one({"_id": item_id})
+                item = collection.find_one({"id": item_id})
                 if not item:
                     continue
                 
@@ -550,15 +543,15 @@ def update_index_fields():
                 
                 # Add timestamps if needed
                 if "enrichment_status" in update_fields and update_fields["enrichment_status"] == "UPDATED" and 'enrichment_updated_at' not in item:
-                    update_fields["enrichment_updated_at"] = int(time.time())
+                    update_fields["enrichment_updated_at"] = current_time
                 
                 if "provider_status" in update_fields and update_fields["provider_status"] == "UPDATED" and 'provider_updated_at' not in item:
-                    update_fields["provider_updated_at"] = int(time.time())
+                    update_fields["provider_updated_at"] = current_time
                 
                 # Add to updates if there are fields to update
                 if update_fields:
                     updates.append(UpdateOne(
-                        {"_id": item_id},
+                        {"id": item_id},
                         {"$set": update_fields}
                     ))
             
@@ -767,10 +760,16 @@ def main():
     logger.info(f"Starting data processing with process_type={PROCESS_TYPE}, worker {worker_id+1}/{total_workers}")
     
     start_time = time.time()
+
+    time.sleep(15)
     
     if PROCESS_TYPE == 'discover' or PROCESS_TYPE == 'full':
         # In discovery mode, each worker handles a specific page range
         run_discovery()
+        time.sleep(15)
+
+
+    
         
     if PROCESS_TYPE == 'enrich' or PROCESS_TYPE == 'full':
         # For enrichment, use the query function
@@ -786,6 +785,10 @@ def main():
             with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
                 for chunk in chunks:
                     executor.submit(process_worker, worker_id, 'enrich', [chunk])
+        time.sleep(15)
+
+
+    
         
     if PROCESS_TYPE == 'providers' or PROCESS_TYPE == 'full':
         # For provider data, use the query function

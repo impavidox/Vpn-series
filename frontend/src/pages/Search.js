@@ -56,6 +56,7 @@ const Search = () => {
       };
 
       const responseData = await ApiService.filterShows(filterCriteria);
+      console.log(responseData)
       // Update data based on page number
       setData(prevData => {
         if (resetData || page === 1) {
