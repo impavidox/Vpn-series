@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base API URL
-const BASE_URL = 'https://wb4vo0e8v9.execute-api.eu-central-1.amazonaws.com/api';
+const BASE_URL = 'https://7qr7vo0030.execute-api.eu-central-1.amazonaws.com/api';
 
 // Create axios instance with default config
 const api = axios.create({

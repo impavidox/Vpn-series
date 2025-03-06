@@ -56,7 +56,6 @@ const Search = () => {
       };
 
       const responseData = await ApiService.filterShows(filterCriteria);
-
       // Update data based on page number
       setData(prevData => {
         if (resetData || page === 1) {
@@ -71,7 +70,6 @@ const Search = () => {
               newData.push(item);
             }
           });
-          
           return newData;
         }
       });

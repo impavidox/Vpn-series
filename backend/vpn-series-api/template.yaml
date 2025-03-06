@@ -31,13 +31,21 @@ Resources:
     Properties:
       CorsConfiguration:
         AllowOrigins:
-          - '*'
+          - http://vpn-series-frontend.s3-website.eu-central-1.amazonaws.com
+          - http://localhost:3000
+          - https://d32y6wudour403.cloudfront.net
         AllowHeaders:
           - Content-Type
+          - Authorization
+          - X-Amz-Date
+          - X-Api-Key
+          - X-Amz-Security-Token
+          - Accept
         AllowMethods:
           - GET
           - POST
           - OPTIONS
+        AllowCredentials: true
 
 Outputs:
   VpnSeriesApi:
