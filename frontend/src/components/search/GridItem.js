@@ -30,28 +30,6 @@ const GridItem = ({ item, onClick }) => {
         {item.vote_average && (
           <div className="rating-badge">{item.vote_average.toFixed(1) || '?'}</div>
         )}
-        
-        {/* Hover content with scrollbar */}
-        <div className="item-hover-content">
-          <div className="hover-genres">
-            {item.genres && item.genres.length > 0 ? (
-              item.genres.slice(0, 2).map((genre, idx) => (
-                <span key={idx} className="hover-genre-tag">{genre}</span>
-              ))
-            ) : (
-              <span className="hover-genre-tag">Unknown Genre</span>
-            )}
-          </div>
-          {/* <div className="hover-overview">
-            {item.plot ? (
-              <>
-                {item.plot}
-              </>
-            ) : (
-              'No overview available.'
-            )}
-          </div> */}
-        </div>
       </div>
       
       <div className="info-container">

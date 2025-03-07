@@ -62,12 +62,11 @@ RATE_LIMIT_DELAY = float(os.environ.get('RATE_LIMIT_DELAY', '0.1'))
 PROCESS_TYPE = os.environ.get('PROCESS_TYPE', 'full')  # Options: discover, enrich, providers, update_indexes
 START_PAGE = int(os.environ.get('START_PAGE', '1'))
 END_PAGE = int(os.environ.get('END_PAGE', '500'))  # Adjust based on your needs
-END_PAGE_MOVIE = int(os.environ.get('END_PAGE_MOVIE', '75'))  # Adjust based on your needs
 PROVIDER_REFRESH_DAYS = int(os.environ.get('PROVIDER_REFRESH_DAYS', '7'))
 ENRICHMENT_REFRESH_DAYS_TV = int(os.environ.get('ENRICHMENT_REFRESH_DAYS_TV', '30'))
 ENRICHMENT_REFRESH_DAYS_MOVIE = int(os.environ.get('ENRICHMENT_REFRESH_DAYS_MOVIE', '90'))  # Movies change less frequently
 CONTENT_TYPE = os.environ.get('CONTENT_TYPE', 'both')  # Options: tv, movies, both
-MOVIE_START_YEAR = int(os.environ.get('MOVIE_START_YEAR', '1900'))
+MOVIE_START_YEAR = int(os.environ.get('MOVIE_START_YEAR', '1990'))
 MOVIE_END_YEAR = int(os.environ.get('MOVIE_END_YEAR', datetime.datetime.now().year))
 
 headers = {
@@ -807,27 +806,18 @@ def get_worker_id_with_locks():
     
     # First, try to find an already assigned ID for this instance
     instance_id = os.environ.get('INSTANCE_ID', socket.gethostname())
-    
-    # More aggressive existing ID check - look for any instance ID match
     try:
         existing_lock = locks_collection.find_one({"instance_id": instance_id})
         
         if existing_lock:
-            worker_id = existing_lock['worker_id']
-            logger.info(f"Reusing existing worker ID {worker_id} for instance {instance_id}")
-            
-            # Update the heartbeat immediately to prevent expiration
-            locks_collection.update_one(
-                {"worker_id": worker_id, "instance_id": instance_id},
-                {"$set": {"last_heartbeat": datetime.datetime.now(datetime.timezone.utc)}}
-            )
+            logger.info(f"Reusing existing worker ID {existing_lock['worker_id']} for instance {instance_id}")
             
             # Start a background thread to keep updating the heartbeat
             def update_heartbeat():
                 while True:
                     try:
                         locks_collection.update_one(
-                            {"worker_id": worker_id, "instance_id": instance_id},
+                            {"worker_id": existing_lock['worker_id'], "instance_id": instance_id},
                             {"$set": {"last_heartbeat": datetime.datetime.now(datetime.timezone.utc)}}
                         )
                         time.sleep(60)  # Update once per minute
@@ -840,7 +830,7 @@ def get_worker_id_with_locks():
             heartbeat_thread = threading.Thread(target=update_heartbeat, daemon=True)
             heartbeat_thread.start()
             
-            return worker_id
+            return existing_lock['worker_id']
     except Exception as e:
         logger.error(f"Error checking for existing lock: {e}")
     
@@ -854,72 +844,6 @@ def get_worker_id_with_locks():
     except Exception as e:
         logger.error(f"Error getting existing worker IDs: {e}")
         existing_ids = set()
-    
-    # Check for stale locks before trying to acquire new ones
-    # A lock is considered stale if its heartbeat hasn't been updated recently
-    stale_cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=5)
-    
-    # Try multiple times to find and claim a stale lock
-    max_stale_attempts = 10
-    stale_attempt = 0
-    
-    while stale_attempt < max_stale_attempts:
-        try:
-            stale_lock = locks_collection.find_one_and_delete(
-                {"last_heartbeat": {"$lt": stale_cutoff}},
-                sort=[("last_heartbeat", 1)]  # Get the oldest stale lock
-            )
-            
-            if not stale_lock:
-                logger.info(f"No stale locks found (attempt {stale_attempt+1}/{max_stale_attempts})")
-                stale_attempt += 1
-                time.sleep(30)  # Brief delay between attempts
-                continue
-                
-            worker_id = stale_lock["worker_id"]
-            logger.info(f"Claiming stale worker ID {worker_id} from inactive worker")
-            
-            # Claim this stale worker ID
-            try:
-                result = locks_collection.insert_one({
-                    "worker_id": worker_id,
-                    "instance_id": instance_id,
-                    "created_at": datetime.datetime.now(datetime.timezone.utc),
-                    "last_heartbeat": datetime.datetime.now(datetime.timezone.utc)
-                })
-                
-                if result.acknowledged:
-                    # Start a background thread to keep updating the heartbeat
-                    def update_heartbeat():
-                        while True:
-                            try:
-                                locks_collection.update_one(
-                                    {"worker_id": worker_id, "instance_id": instance_id},
-                                    {"$set": {"last_heartbeat": datetime.datetime.now(datetime.timezone.utc)}}
-                                )
-                                time.sleep(60)  # Update once per minute
-                            except Exception as e:
-                                logger.error(f"Failed to update heartbeat: {e}")
-                                time.sleep(5)  # Retry sooner if failed
-                    
-                    # Start heartbeat thread as daemon so it doesn't block program exit
-                    import threading
-                    heartbeat_thread = threading.Thread(target=update_heartbeat, daemon=True)
-                    heartbeat_thread.start()
-                    
-                    return worker_id
-            except Exception as e:
-                # If we couldn't claim this ID (race condition with another worker),
-                # continue the loop to try another stale lock
-                logger.info(f"Failed to claim stale worker ID {worker_id}: {e}")
-                stale_attempt += 1
-                continue
-                
-        except Exception as e:
-            logger.error(f"Error handling stale locks: {e}")
-            stale_attempt += 1
-    
-    logger.info("Exhausted attempts to claim stale locks")
     
     # Try to acquire a lock for each worker ID sequentially until success
     for worker_id in range(total_workers):
@@ -966,22 +890,63 @@ def get_worker_id_with_locks():
             time.sleep(random.uniform(0.1, 0.5))
             continue
     
-    # If all worker IDs are taken, use a persistent fallback ID for this instance
-    # instead of generating a random one each time
-    fallback_id = total_workers + hash(instance_id) % 100  # Deterministic based on instance_id
-    logger.warning(f"All worker IDs are taken! Using deterministic fallback ID {fallback_id}")
+    # If we exhausted all worker IDs, we need to check for stale locks
+    # A lock is considered stale if its heartbeat hasn't been updated recently
+    stale_cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=5)
     
     try:
-        # Try to register this fallback ID or update if it already exists
-        locks_collection.update_one(
-            {"instance_id": instance_id, "is_fallback": True},
-            {"$set": {
-                "worker_id": fallback_id,
-                "created_at": datetime.datetime.now(datetime.timezone.utc),
-                "last_heartbeat": datetime.datetime.now(datetime.timezone.utc),
-            }},
-            upsert=True
+        stale_lock = locks_collection.find_one_and_delete(
+            {"last_heartbeat": {"$lt": stale_cutoff}},
+            sort=[("last_heartbeat", 1)]  # Get the oldest stale lock
         )
+        
+        if stale_lock:
+            worker_id = stale_lock["worker_id"]
+            # Claim this stale worker ID
+            locks_collection.insert_one({
+                "worker_id": worker_id,
+                "instance_id": instance_id,
+                "created_at": datetime.datetime.now(datetime.timezone.utc),
+                "last_heartbeat": datetime.datetime.now(datetime.timezone.utc)
+            })
+            logger.info(f"Claimed stale worker ID {worker_id} from inactive worker")
+            
+            # Start a background thread to keep updating the heartbeat
+            def update_heartbeat():
+                while True:
+                    try:
+                        locks_collection.update_one(
+                            {"worker_id": worker_id, "instance_id": instance_id},
+                            {"$set": {"last_heartbeat": datetime.datetime.now(datetime.timezone.utc)}}
+                        )
+                        time.sleep(60)  # Update once per minute
+                    except Exception as e:
+                        logger.error(f"Failed to update heartbeat: {e}")
+                        time.sleep(5)  # Retry sooner if failed
+            
+            # Start heartbeat thread as daemon so it doesn't block program exit
+            import threading
+            heartbeat_thread = threading.Thread(target=update_heartbeat, daemon=True)
+            heartbeat_thread.start()
+            
+            return worker_id
+    except Exception as e:
+        logger.error(f"Error handling stale locks: {e}")
+    
+    # If all else fails, generate a high worker ID (beyond normal range)
+    # This is not ideal but allows the system to continue functioning
+    fallback_id = total_workers + random.randint(0, 100)
+    logger.warning(f"All worker IDs are taken! Using fallback ID {fallback_id}")
+    
+    try:
+        # Still register this fallback ID
+        locks_collection.insert_one({
+            "worker_id": fallback_id,
+            "instance_id": instance_id,
+            "created_at": datetime.datetime.now(datetime.timezone.utc),
+            "last_heartbeat": datetime.datetime.now(datetime.timezone.utc),
+            "is_fallback": True
+        })
         
         # Start a background thread to keep updating the heartbeat
         def update_heartbeat():
@@ -1125,7 +1090,7 @@ def run_discovery(worker_id):
         
         # Define fixed page range for each year
         # We use all pages for each year since the primary distribution is by year
-        movie_pages = list(range(START_PAGE, END_PAGE_MOVIE + 1))
+        movie_pages = list(range(START_PAGE, END_PAGE + 1))
         
         # Process movies for each year assigned to this worker
         for year in worker_years:
@@ -1153,13 +1118,12 @@ def main():
     start_time = time.time()
     
     # Allow system to initialize and other workers to start
-    time.sleep(30)
+    time.sleep(15)
     
     if PROCESS_TYPE == 'discover' or PROCESS_TYPE == 'full':
         # Discovery process for new content
         run_discovery(worker_id)
-        logger.info("Discovery ended. Waiting 75 seconds...")
-        time.sleep(75)
+        time.sleep(15)
     
     if PROCESS_TYPE == 'enrich' or PROCESS_TYPE == 'full':
         # Determine which content types to enrich
@@ -1171,7 +1135,7 @@ def main():
         for content_type in content_types:
             # Fetch items needing enrichment
             items_list = fetch_items_needing_enrichment_refresh(content_type)
-            time.sleep(40)
+            
             if items_list:
                 # Distribute workload across workers by taking every nth item
                 worker_items = [item for i, item in enumerate(items_list) if i % total_workers == worker_id]
@@ -1182,8 +1146,8 @@ def main():
                 with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
                     for chunk in chunks:
                         executor.submit(process_worker, worker_id, 'enrich', [chunk], content_type)
-        logger.info("Enrichment ended. Waiting 75 seconds...")
-        time.sleep(75)
+        
+        time.sleep(15)
     
     if PROCESS_TYPE == 'providers' or PROCESS_TYPE == 'full':
         # Determine which content types to process for providers
@@ -1195,7 +1159,7 @@ def main():
         for content_type in content_types:
             # Fetch items needing provider data
             items_list = fetch_items_needing_provider_refresh(content_type)
-            time.sleep(40)
+            
             if items_list:
                 # Distribute workload across workers
                 worker_items = [item for i, item in enumerate(items_list) if i % total_workers == worker_id]
