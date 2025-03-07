@@ -29,9 +29,7 @@ const ApiService = {
    */
   async filterShows(filterCriteria) {
     try {
-      console.log(filterCriteria)
       const response = await api.post('/filter', filterCriteria);
-      console.log(response)
       return response.data;
     } catch (error) {
       console.error("Error filtering shows:", error);

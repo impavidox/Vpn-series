@@ -45,6 +45,12 @@ const Home = () => {
     };
   }, []);
 
+  // Clear streaming selection when country changes
+  useEffect(() => {
+    // Reset streaming selections when a new country is selected
+    setSelectedStreaming([]);
+  }, [selectedCountry, setSelectedStreaming]);
+
   // Handle selection of a continent
   const handleContinentSelect = (continent) => {
     setSelectedContinent(continent);
@@ -101,12 +107,18 @@ const Home = () => {
         selectedCountry={selectedCountry}
         onCountrySelect={handleCountrySelect}
         onBack={() => handleBack(2)}
-        onNext={() => setPhase(4)}
+        onNext={() => {
+          // Only proceed if a country is selected
+          if (selectedCountry) {
+            setPhase(4);
+          }
+        }}
       />
 
       {/* Streaming services selection */}
       <StreamingSelector 
         isActive={phase === 4}
+        selectedCountry={selectedCountry}
         selectedStreaming={selectedStreaming}
         onStreamingSelect={handleStreamingSelection}
         onBack={() => handleBack(3)}

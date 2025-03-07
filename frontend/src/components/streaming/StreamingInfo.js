@@ -65,16 +65,17 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                   {countryDict[country] || country}
                 </div>
                 <ul className="provider-list">
-                  {Object.entries(providers).map(([provider, seasons], providerIndex) => {
-                    const seasonCount = parseInt(seasons);
+                  {console.log(providers)}
+                  {Object.entries(providers).map(([providerName, providerInfo], providerIndex) => {
+                    const seasonCount = parseInt(providerInfo.count);
                     const percentComplete = (seasonCount / totalSeasons) * 100;
                     const isComplete = seasonCount >= totalSeasons;
                     
                     return (
                       <li key={providerIndex}>
                         <img 
-                          src={`https://image.tmdb.org/t/p/w185/${providerDict[provider] || ''}`} 
-                          alt={provider} 
+                          src={`https://image.tmdb.org/t/p/w185/${providerDict[providerName] || ''}`} 
+                          alt={providerName} 
                           className="provider-icon" 
                           onError={(e) => {
                             e.target.onerror = null;
@@ -83,11 +84,14 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                         />
                         <div className="provider-info">
                           <div className="provider-header">
-                            <span className="provider-name">{provider}</span>
+                            <span className="provider-name">{providerName}</span>
                             {isComplete && <span className="availability-tag">Full Series</span>}
+                            {/* {providerInfo.type && (
+                              <span className="provider-type">{providerInfo.type}</span>
+                            )} */}
                           </div>
                           <span className="provider-seasons">
-                            {seasons} of {totalSeasons} season{totalSeasons !== 1 ? 's' : ''}
+                            {seasonCount} of {totalSeasons} season{totalSeasons !== 1 ? 's' : ''}
                           </span>
                           <div className="season-progress">
                             <div 
@@ -103,7 +107,7 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
               </div>
             );
           })}
-
+  
           {countryEntries.length > 3 && (
             <div className="show-more-countries">
               <button onClick={() => setShowAllCountries(!showAllCountries)}>
@@ -119,8 +123,7 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
         </div>
       )}
     </div>
-  );
-};
+  );};
 
 StreamingInfo.propTypes = {
   selectedSeries: PropTypes.object,
