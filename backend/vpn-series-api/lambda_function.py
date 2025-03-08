@@ -268,8 +268,17 @@ def lambda_handler(event, context):
         
         # Retrieve filtered data
         filtered_data = list(
-            collection.find(combined_query)
-            .sort('vote_count', -1)
+            collection.find(
+                combined_query,
+                {
+                    "title": 1,
+                    "vote_average": 1,
+                    "year": 1,
+                    "poster_path": 1,
+                    "_id": 0,  # Exclude the _id field
+                },
+            )
+            .sort("vote_count", -1)
             .skip(skip)
             .limit(limit)
         )
