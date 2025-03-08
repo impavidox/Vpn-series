@@ -15,7 +15,7 @@ import ApiService from '../services/api';
 
 import '../styles/index.css';
 import '../styles/Search.css';
-import '../styles/HeaderSearchFilter.css'; // Make sure this is imported
+import '../styles/HeaderSearchFilter.css'; 
 
 // Define our z-index values
 document.documentElement.style.setProperty('--z-index-modal', '2000');
@@ -196,9 +196,10 @@ const Search = () => {
         loaderRef={loaderRef}
       />
 
-      {/* Series detail modal */}
+      {/* Series detail modal - updated to include country */}
       <SeriesModal 
-        series={selectedSeries}
+        seriesItem={selectedSeries}
+        country={country}
         streamingProviders={selectedStreamingProviders}
         onClose={closeModal}
       />

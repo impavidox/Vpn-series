@@ -38,17 +38,20 @@ const ApiService = {
   },
 
   /**
-   * Get show details by ID
+   * Get detailed show information by ID including streaming providers
    * 
    * @param {string} showId - ID of the show to fetch
-   * @returns {Promise<Object>} - Show details
+   * @param {string} country - Country code for streaming availability
+   * @returns {Promise<Object>} - Show details with streaming data
    */
-  async getShowDetails(showId) {
+  async getSeriesDetails(showId, country) {
     try {
-      const response = await api.get(`/shows/${showId}`);
+      const response = await api.get(`/series/${showId}`, {
+        params: { country }
+      });
       return response.data;
     } catch (error) {
-      console.error("Error fetching show details:", error);
+      console.error("Error fetching series details:", error);
       throw error;
     }
   },

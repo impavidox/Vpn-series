@@ -1,25 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../common/Modal';
-import StreamingInfo from '../../components/streaming/StreamingInfo';
+import StreamingInfo from '../streaming/StreamingInfo';
+import Loader from '../common/Loader';
 import { getImageUrl } from '../../utils/helpers';
+import ApiService from '../../services/api';
 
 /**
- * Modal component for displaying series details
- * Fixed version to ensure proper layout and styling
+ * Modal component for displaying series details with data loading
  * 
  * @param {Object} props - Component props
- * @param {Object} props.series - The selected series data
+ * @param {Object} props.seriesItem - The selected series data from the grid
+ * @param {string} props.country - Country code to fetch availability
  * @param {Array} props.streamingProviders - Selected streaming providers
  * @param {Function} props.onClose - Function to call when the modal is closed
  */
-const SeriesModal = ({ series, streamingProviders, onClose }) => {
+const SeriesModal = ({ seriesItem, country, streamingProviders, onClose }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [seriesDetails, setSeriesDetails] = useState(null);
 
-  if (!series) return null;
+  // When a series is selected, fetch the detailed information
+  useEffect(() => {
+    const loadSeriesDetails = async () => {
+      if (!seriesItem) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Fetch detailed information about the series
+        const details = await ApiService.getSeriesDetails(seriesItem._id || seriesItem.id, country);
+        setSeriesDetails(details);
+      } catch (err) {
+        console.error('Error loading series details:', err);
+        setError('Failed to load series details. Please try again later.');
+        // Use basic info from seriesItem as fallback
+        setSeriesDetails(seriesItem);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSeriesDetails();
+  }, [seriesItem, country]);
+
+  if (!seriesItem) return null;
+
+  // Use fallback to grid item data if detailed data isn't loaded yet
+  const series = seriesDetails || seriesItem;
 
   return (
-    <Modal isOpen={!!series} onClose={onClose}>
+    <Modal isOpen={!!seriesItem} onClose={onClose}>
       <div className="modal-image-container">
         <img
           src={getImageUrl(series.backdrop_path || series.poster_path, 'w1280')}
@@ -53,58 +86,78 @@ const SeriesModal = ({ series, streamingProviders, onClose }) => {
       </div>
       
       <div className="modal-details">
-        <div className="modal-section">
-          <h3 className="section-title">Overview</h3>
-          <p className="modal-plot">{series.plot || 'No overview available.'}</p>
-        </div>
-        
-        {(series.genres || series.actors || series.episode_run_time) && (
-          <div className="modal-section">
-            <h3 className="section-title">Details</h3>
-            <div className="modal-details-grid">
-              {series.genres && series.genres.length > 0 && (
-                <div className="detail-item">
-                  <span className="detail-label">Genre</span>
-                  <div className="detail-value genre-tags">
-                    {series.genres.map((genre, idx) => (
-                      <span key={idx} className="genre-tag">{genre}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {series.actors && series.actors.length > 0 && (
-                <div className="detail-item">
-                  <span className="detail-label">Cast</span>
-                  <span className="detail-value">{series.actors.join(', ')}</span>
-                </div>
-              )}
-              
-              {series.episode_run_time && (
-                <div className="detail-item">
-                  <span className="detail-label">Episode Length</span>
-                  <span className="detail-value">{series.episode_run_time} min</span>
-                </div>
-              )}
-            </div>
+        {isLoading ? (
+          <div className="modal-loading">
+            <Loader text="Loading series details..." visible={true} />
           </div>
+        ) : error ? (
+          <div className="modal-error">
+            <p>{error}</p>
+          </div>
+        ) : (
+          <>
+            <div className="modal-section">
+              <h3 className="section-title">Overview</h3>
+              <p className="modal-plot">{series.plot || series.overview || 'No overview available.'}</p>
+            </div>
+            
+            {(series.genres || series.cast || series.episode_run_time) && (
+              <div className="modal-section">
+                <h3 className="section-title">Details</h3>
+                <div className="modal-details-grid">
+                  {series.genres && series.genres.length > 0 && (
+                    <div className="detail-item">
+                      <span className="detail-label">Genre</span>
+                      <div className="detail-value genre-tags">
+                        {series.genres.map((genre, idx) => (
+                          <span key={idx} className="genre-tag">{genre}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {series.cast && series.cast.length > 0 && (
+                    <div className="detail-item">
+                      <span className="detail-label">Cast</span>
+                      <span className="detail-value">{series.cast.join(', ')}</span>
+                    </div>
+                  )}
+                  
+                  {series.episode_run_time && (
+                    <div className="detail-item">
+                      <span className="detail-label">Episode Length</span>
+                      <span className="detail-value">{series.episode_run_time} min</span>
+                    </div>
+                  )}
+
+                  {series.first_air_date && (
+                    <div className="detail-item">
+                      <span className="detail-label">First Aired</span>
+                      <span className="detail-value">{new Date(series.first_air_date).toLocaleDateString()}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Streaming Information */}
+            <div className="modal-section">
+              <h3 className="section-title">Where to Watch</h3>
+              <StreamingInfo 
+                selectedSeries={series} 
+                streaming={streamingProviders} 
+              />
+            </div>
+          </>
         )}
-        
-        {/* Streaming Information */}
-        <div className="modal-section">
-          <h3 className="section-title">Where to Watch</h3>
-          <StreamingInfo 
-            selectedSeries={series} 
-            streaming={streamingProviders} 
-          />
-        </div>
       </div>
     </Modal>
   );
 };
 
 SeriesModal.propTypes = {
-  series: PropTypes.object,
+  seriesItem: PropTypes.object,
+  country: PropTypes.string,
   streamingProviders: PropTypes.array,
   onClose: PropTypes.func.isRequired
 };
