@@ -31,7 +31,9 @@ const SeriesModal = ({ seriesItem, country, streamingProviders, onClose }) => {
       
       try {
         // Fetch detailed information about the series
-        const details = await ApiService.getSeriesDetails(seriesItem._id || seriesItem.id, country);
+       
+        const details = await ApiService.getSeriesDetails(seriesItem.id || seriesItem.id, country);
+        console.log(details)
         setSeriesDetails(details);
       } catch (err) {
         console.error('Error loading series details:', err);

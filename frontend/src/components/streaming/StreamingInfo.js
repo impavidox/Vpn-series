@@ -9,6 +9,7 @@ import Loader from '../common/Loader';
 /**
  * Streaming information component for the series modal
  * Enhanced to handle loading states and fallbacks
+ * Orders countries by completeness of seasons
  * 
  * @param {Object} props - Component props
  * @param {Object} props.selectedSeries - The selected series data
@@ -43,11 +44,38 @@ const StreamingInfo = ({ selectedSeries, streaming, isLoading = false }) => {
   };
 
   const providersData = getStreamingProviders(selectedSeries);
-  const countryEntries = Object.entries(providersData);
-  const displayedCountries = showAllCountries ? countryEntries : countryEntries.slice(0, 3);
-  
   // Get the total number of seasons for the show
   const totalSeasons = selectedSeries?.number_of_seasons || 0;
+  
+  // Sort countries by completeness of their seasons
+  const sortedCountryEntries = Object.entries(providersData).sort((a, b) => {
+    const [, providersA] = a;
+    const [, providersB] = b;
+    
+    // Find the provider with the highest season count in each country
+    const highestCountA = Object.values(providersA).reduce((max, providerInfo) => {
+      const seasonCount = typeof providerInfo === 'object' 
+        ? parseInt(providerInfo.count || 1) 
+        : parseInt(providerInfo || 1);
+      return Math.max(max, seasonCount);
+    }, 0);
+    
+    const highestCountB = Object.values(providersB).reduce((max, providerInfo) => {
+      const seasonCount = typeof providerInfo === 'object' 
+        ? parseInt(providerInfo.count || 1) 
+        : parseInt(providerInfo || 1);
+      return Math.max(max, seasonCount);
+    }, 0);
+    
+    // Calculate the highest percentage of completeness for each country
+    const percentCompleteA = totalSeasons > 0 ? (highestCountA / totalSeasons) : 0;
+    const percentCompleteB = totalSeasons > 0 ? (highestCountB / totalSeasons) : 0;
+    
+    // Sort in descending order (most complete first)
+    return percentCompleteB - percentCompleteA;
+  });
+  
+  const displayedCountries = showAllCountries ? sortedCountryEntries : sortedCountryEntries.slice(0, 3);
 
   if (isLoading) {
     return (
@@ -59,10 +87,20 @@ const StreamingInfo = ({ selectedSeries, streaming, isLoading = false }) => {
 
   return (
     <div className={`streaming-info ${isVisible ? 'visible' : ''}`}>
-      {countryEntries.length > 0 ? (
+      {sortedCountryEntries.length > 0 ? (
         <div className="streaming-countries">
           {displayedCountries.map(([country, providers], countryIndex) => {
-            const maxSeasons = calculateMaxSeasons(providers);
+            // Find the highest season count among all providers in this country
+            const highestSeasonCount = Object.values(providers).reduce((max, providerInfo) => {
+              const seasonCount = typeof providerInfo === 'object' 
+                ? parseInt(providerInfo.count || 1) 
+                : parseInt(providerInfo || 1);
+              return Math.max(max, seasonCount);
+            }, 0);
+            
+            const countryCompletenessPercent = totalSeasons > 0 
+              ? Math.round((highestSeasonCount / totalSeasons) * 100) 
+              : 100;
             
             return (
               <div 
@@ -80,7 +118,8 @@ const StreamingInfo = ({ selectedSeries, streaming, isLoading = false }) => {
                       e.target.style.display = 'none';
                     }}
                   />
-                  {countryDict[country] || country}
+                  <span>{countryDict[country] || country}</span>
+
                 </div>
                 <ul className="provider-list">
                   {Object.entries(providers).map(([providerName, providerInfo], providerIndex) => {
@@ -134,10 +173,10 @@ const StreamingInfo = ({ selectedSeries, streaming, isLoading = false }) => {
             );
           })}
   
-          {countryEntries.length > 3 && (
+          {sortedCountryEntries.length > 3 && (
             <div className="show-more-countries">
               <button onClick={() => setShowAllCountries(!showAllCountries)}>
-                {showAllCountries ? "Show Less Countries" : `Show More Countries (${countryEntries.length - 3} more)`}
+                {showAllCountries ? "Show Less Countries" : `Show More Countries (${sortedCountryEntries.length - 3} more)`}
               </button>
             </div>
           )}

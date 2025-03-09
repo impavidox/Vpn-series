@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base API URL
-const BASE_URL = 'https://7qr7vo0030.execute-api.eu-central-1.amazonaws.com/api';
+const BASE_URL = 'https://7voxso3v27.execute-api.eu-central-1.amazonaws.com/api';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -44,11 +44,10 @@ const ApiService = {
    * @param {string} country - Country code for streaming availability
    * @returns {Promise<Object>} - Show details with streaming data
    */
-  async getSeriesDetails(showId, country) {
+  async getSeriesDetails(showId) {
     try {
-      const response = await api.get(`/series/${showId}`, {
-        params: { country }
-      });
+      const response = await api.get(`/series/${showId}`);
+      console.log(response)
       return response.data;
     } catch (error) {
       console.error("Error fetching series details:", error);

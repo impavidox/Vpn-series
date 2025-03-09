@@ -15,16 +15,33 @@ Resources:
           Properties:
             Path: /api/data
             Method: get
+            ApiId: !Ref ApiGatewayApi
         FilterData:
           Type: HttpApi
           Properties:
             Path: /api/filter
             Method: post
+            ApiId: !Ref ApiGatewayApi
         OptionsFilter:
           Type: HttpApi
           Properties:
             Path: /api/filter
             Method: options
+            ApiId: !Ref ApiGatewayApi
+        # New endpoint for getting a single series by ID
+        GetSeriesById:
+          Type: HttpApi
+          Properties:
+            Path: /api/series/{id}
+            Method: get
+            ApiId: !Ref ApiGatewayApi
+        # OPTIONS endpoint for the series/{id} path
+        OptionsSeriesById:
+          Type: HttpApi
+          Properties:
+            Path: /api/series/{id}
+            Method: options
+            ApiId: !Ref ApiGatewayApi
 
   ApiGatewayApi:
     Type: AWS::Serverless::HttpApi
@@ -45,7 +62,10 @@ Resources:
           - GET
           - POST
           - OPTIONS
+          - PUT
+          - DELETE
         AllowCredentials: true
+        MaxAge: 600  # Cache preflight request results for 10 minutes (600 seconds)
 
 Outputs:
   VpnSeriesApi:
