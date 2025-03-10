@@ -31,6 +31,9 @@ def filter_data():
         # Example: Handle year filtering
         if 'year' in filter_criteria:
             query['year'] = str(filter_criteria['year'])
+
+        if 'genres' in filter_criteria:
+            query['genres'] = { '$all': filter_criteria['genres'] }
     page = int(filter_criteria.get('page', 1))
     limit = 56  # Number of results per page
     skip = (page - 1) * limit  # Calculate the number of documents to skip

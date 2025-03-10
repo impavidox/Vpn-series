@@ -28,6 +28,9 @@ order streaming country per quantità di stagioni
 bug durata alcune serie
 
 
+risolvere problema https
+
+
 bug  con stagioni molto lunghe
 {
   "_id": {

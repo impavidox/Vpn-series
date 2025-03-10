@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  VpnSeriesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      Timeout: 30
+      MemorySize: 256
+      Events:
+        GetData:
+          Type: HttpApi
+          Properties:
+            Path: /api/data
+            Method: get
+        FilterData:
+          Type: HttpApi
+          Properties:
+            Path: /api/filter
+            Method: post
+        OptionsFilter:
+          Type: HttpApi
+          Properties:
+            Path: /api/filter
+            Method: options
+
+  ApiGatewayApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - http://vpn-series-frontend.s3-website.eu-central-1.amazonaws.com
+          - http://localhost:3000
+          - https://d32y6wudour403.cloudfront.net
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+          - X-Amz-Date
+          - X-Api-Key
+          - X-Amz-Security-Token
+          - Accept
+        AllowMethods:
+          - GET
+          - POST
+          - OPTIONS
+        AllowCredentials: true
+
+Outputs:
+  VpnSeriesApi:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/"
+  VpnSeriesFunction:
+    Description: Lambda Function ARN
+    Value: !GetAtt VpnSeriesFunction.Arn

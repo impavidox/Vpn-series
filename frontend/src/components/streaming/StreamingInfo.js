@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import providerDict from './provider_dict.json';
-import countryDict from './country_dict.json';
-import './StreamingInfo.css';
+import PropTypes from 'prop-types';
+import providerDict from '../../provider_dict.json';
+import countryDict from '../../country_dict.json';
+import { filterProviders, calculateMaxSeasons } from '../../utils/helpers';
+import '../../styles/StreamingInfo.css';
 
-function StreamingInfo({ selectedSeries, streaming }) {
+/**
+ * Streaming information component for the series modal
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.selectedSeries - The selected series data
+ * @param {Array} props.streaming - Selected streaming providers
+ */
+const StreamingInfo = ({ selectedSeries, streaming }) => {
   const [showAllCountries, setShowAllCountries] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   
@@ -16,41 +25,11 @@ function StreamingInfo({ selectedSeries, streaming }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Filter providers based on selected streaming services
-  const filterProviders = (providerData, allowedProviders) => {
-    if (!allowedProviders || allowedProviders.length === 0) {
-      // If no streaming providers are selected, show all providers
-      return providerData || {};
-    }
-
-    return Object.fromEntries(
-      Object.entries(providerData || {})
-        .map(([country, providers]) => [
-          country,
-          Object.fromEntries(
-            Object.entries(providers).filter(([provider]) =>
-              allowedProviders.includes(provider)
-            )
-          ),
-        ])
-        .filter(([country, providers]) => Object.keys(providers).length > 0)
-    );
-  };
-
   const getStreamingProviders = (selectedSeries) => {
     if (selectedSeries && selectedSeries.provider_data) {
       return filterProviders(selectedSeries.provider_data, streaming);
     }
     return {};
-  };
-
-  // Calculate max seasons for progress bars
-  const calculateMaxSeasons = (providers) => {
-    let max = 0;
-    Object.values(providers).forEach(seasons => {
-      if (parseInt(seasons) > max) max = parseInt(seasons);
-    });
-    return max || 1; // Avoid division by zero
   };
 
   const providersData = getStreamingProviders(selectedSeries);
@@ -86,16 +65,17 @@ function StreamingInfo({ selectedSeries, streaming }) {
                   {countryDict[country] || country}
                 </div>
                 <ul className="provider-list">
-                  {Object.entries(providers).map(([provider, seasons], providerIndex) => {
-                    const seasonCount = parseInt(seasons);
+                  {console.log(providers)}
+                  {Object.entries(providers).map(([providerName, providerInfo], providerIndex) => {
+                    const seasonCount = parseInt(providerInfo.count);
                     const percentComplete = (seasonCount / totalSeasons) * 100;
                     const isComplete = seasonCount >= totalSeasons;
                     
                     return (
                       <li key={providerIndex}>
                         <img 
-                          src={`https://image.tmdb.org/t/p/w185/${providerDict[provider] || ''}`} 
-                          alt={provider} 
+                          src={`https://image.tmdb.org/t/p/w185/${providerDict[providerName] || ''}`} 
+                          alt={providerName} 
                           className="provider-icon" 
                           onError={(e) => {
                             e.target.onerror = null;
@@ -104,11 +84,14 @@ function StreamingInfo({ selectedSeries, streaming }) {
                         />
                         <div className="provider-info">
                           <div className="provider-header">
-                            <span className="provider-name">{provider}</span>
+                            <span className="provider-name">{providerName}</span>
                             {isComplete && <span className="availability-tag">Full Series</span>}
+                            {/* {providerInfo.type && (
+                              <span className="provider-type">{providerInfo.type}</span>
+                            )} */}
                           </div>
                           <span className="provider-seasons">
-                            {seasons} of {totalSeasons} season{totalSeasons !== 1 ? 's' : ''}
+                            {seasonCount} of {totalSeasons} season{totalSeasons !== 1 ? 's' : ''}
                           </span>
                           <div className="season-progress">
                             <div 
@@ -124,11 +107,11 @@ function StreamingInfo({ selectedSeries, streaming }) {
               </div>
             );
           })}
-
+  
           {countryEntries.length > 3 && (
             <div className="show-more-countries">
               <button onClick={() => setShowAllCountries(!showAllCountries)}>
-                {showAllCountries ? "Show Less Countries" : `Show  More Countries`}
+                {showAllCountries ? "Show Less Countries" : `Show More Countries`}
               </button>
             </div>
           )}
@@ -140,7 +123,11 @@ function StreamingInfo({ selectedSeries, streaming }) {
         </div>
       )}
     </div>
-  );
-}
+  );};
+
+StreamingInfo.propTypes = {
+  selectedSeries: PropTypes.object,
+  streaming: PropTypes.array
+};
 
 export default StreamingInfo;
