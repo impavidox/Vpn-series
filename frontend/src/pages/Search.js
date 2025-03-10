@@ -15,13 +15,13 @@ import ApiService from '../services/api';
 
 import '../styles/index.css';
 import '../styles/Search.css';
-import '../styles/HeaderSearchFilter.css'; // Make sure this is imported
+import '../styles/HeaderSearchFilter.css';
 
 // Define our z-index values
 document.documentElement.style.setProperty('--z-index-modal', '2000');
 
 /**
- * Search page component with integrated header search and filter popup
+ * Search page component with integrated header search, filter popup, and progressive loading
  */
 const Search = () => {
   // Navigation and location
@@ -34,7 +34,9 @@ const Search = () => {
 
   // State
   const [data, setData] = useState([]);
+  const [detailedData, setDetailedData] = useState({});
   const [selectedSeries, setSelectedSeries] = useState(null);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [appliedTitleFilter, setAppliedTitleFilter] = useState('');
   const [appliedYearFilter, setAppliedYearFilter] = useState('');
   const [appliedGenreFilter, setAppliedGenreFilter] = useState([]);
@@ -43,7 +45,7 @@ const Search = () => {
   const [totalResults, setTotalResults] = useState('1000+');
   const [selectedStreamingProviders] = useState(streaming || []);
 
-  // Data fetching function
+  // Data fetching function for grid items (minimal data)
   const fetchData = useCallback(async (page = 1, resetData = false) => {
     try {
       const filterCriteria = {
@@ -52,10 +54,12 @@ const Search = () => {
         page,
         country,
         streaming: selectedStreamingProviders,
-        genres: appliedGenreFilter.length > 0 ? appliedGenreFilter : undefined
+        genres: appliedGenreFilter.length > 0 ? appliedGenreFilter : undefined,
+        projection: "minimal" // Request minimal data fields for grid display
       };
 
       const responseData = await ApiService.filterShows(filterCriteria);
+      
       // Update data based on page number
       setData(prevData => {
         if (resetData || page === 1) {
@@ -97,6 +101,43 @@ const Search = () => {
     }
   }, [appliedTitleFilter, appliedYearFilter, appliedGenreFilter, country, selectedStreamingProviders]);
 
+  // Function to fetch detailed data in the background
+  const fetchDetailedData = useCallback(async (items) => {
+    if (!items || items.length === 0) return;
+    
+    // Get IDs for items that we don't already have detailed data for
+    const missingDetailIds = items
+      .filter(item => !detailedData[item._id])
+      .map(item => item._id);
+    
+    if (missingDetailIds.length === 0) return;
+    
+    try {
+      // Batch fetch detailed data for multiple items
+      const detailedCriteria = {
+        ids: missingDetailIds,
+        country,
+        streaming: selectedStreamingProviders,
+        projection: "full" // Request all fields
+      };
+      
+      const detailedResults = await ApiService.batchGetShowDetails(detailedCriteria);
+      
+      // Merge new detailed data with existing data
+      setDetailedData(prevData => {
+        const newData = { ...prevData };
+        detailedResults.forEach(item => {
+          if (item && item._id) {
+            newData[item._id] = item;
+          }
+        });
+        return newData;
+      });
+    } catch (error) {
+      console.error("Error fetching detailed data:", error);
+    }
+  }, [country, selectedStreamingProviders, detailedData]);
+
   // Load more data for infinite scrolling
   const loadMoreData = useCallback((nextPage) => {
     return fetchData(nextPage, false);
@@ -131,6 +172,21 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Background fetch of detailed data after initial data loads
+  useEffect(() => {
+    if (data.length > 0) {
+      // Fetch first batch of detailed data immediately
+      fetchDetailedData(data.slice(0, 10));
+      
+      // Fetch the rest with a slight delay to prioritize initial render
+      const timer = setTimeout(() => {
+        fetchDetailedData(data.slice(10));
+      }, 2000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [data, fetchDetailedData]);
+
   // Handle header search
   const handleHeaderSearch = (searchTerm) => {
     setAppliedTitleFilter(searchTerm);
@@ -152,13 +208,43 @@ const Search = () => {
   };
 
   // Handle item selection
-  const handleItemClick = (item) => {
-    setSelectedSeries(item);
+  const handleItemClick = async (item) => {
+    // Check if we already have detailed data for this item
+    if (detailedData[item._id]) {
+      // Use the detailed data we already have
+      setSelectedSeries(detailedData[item._id]);
+    } else {
+      // Set the basic item data first so modal can show immediately
+      setSelectedSeries(item);
+      setIsLoadingDetails(true);
+      
+      try {
+        // Fetch detailed data for this specific item
+        const detailedItem = await ApiService.getShowDetails(item._id, {
+          country,
+          streaming: selectedStreamingProviders
+        });
+        
+        // Update the selected series with detailed data
+        setSelectedSeries(detailedItem);
+        
+        // Also store in our cache
+        setDetailedData(prev => ({
+          ...prev,
+          [item._id]: detailedItem
+        }));
+      } catch (error) {
+        console.error("Error fetching show details:", error);
+      } finally {
+        setIsLoadingDetails(false);
+      }
+    }
   };
 
   // Close modal
   const closeModal = () => {
     setSelectedSeries(null);
+    setIsLoadingDetails(false);
   };
 
   // Navigate back to home
@@ -200,6 +286,7 @@ const Search = () => {
       <SeriesModal 
         series={selectedSeries}
         streamingProviders={selectedStreamingProviders}
+        isLoadingDetails={isLoadingDetails}
         onClose={closeModal}
       />
     </div>

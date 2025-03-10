@@ -25,6 +25,28 @@ Resources:
           Properties:
             Path: /api/filter
             Method: options
+        # New endpoints for show details
+        GetShowDetails:
+          Type: HttpApi
+          Properties:
+            Path: /api/shows/{id}
+            Method: get
+        OptionsShowDetails:
+          Type: HttpApi
+          Properties:
+            Path: /api/shows/{id}
+            Method: options
+        # New endpoint for batch show details
+        BatchShowDetails:
+          Type: HttpApi
+          Properties:
+            Path: /api/shows/batch
+            Method: post
+        OptionsBatchShowDetails:
+          Type: HttpApi
+          Properties:
+            Path: /api/shows/batch
+            Method: options
 
   ApiGatewayApi:
     Type: AWS::Serverless::HttpApi

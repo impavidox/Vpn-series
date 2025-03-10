@@ -449,3 +449,127 @@
     font-size: 22px;
   }
 }
+
+
+/* Modal loading state styling */
+.loading-placeholder {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.loading-pulse {
+  height: 16px;
+  background: linear-gradient(90deg, rgba(67, 188, 205, 0.1), rgba(67, 188, 205, 0.3));
+  border-radius: 4px;
+  margin-bottom: 10px;
+  animation: pulse 1.5s ease-in-out infinite;
+  width: 100%;
+}
+
+.loading-pulse.shorter {
+  width: 70%;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Loading genre tags */
+.loading-genre-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.loading-genre-tag {
+  display: inline-block;
+  height: 24px;
+  width: 80px;
+  background: linear-gradient(90deg, rgba(239, 131, 84, 0.2), rgba(239, 131, 84, 0.3));
+  border-radius: 20px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-genre-tag:nth-child(2) {
+  width: 110px;
+  animation-delay: 0.2s;
+}
+
+.loading-genre-tag:nth-child(3) {
+  width: 70px;
+  animation-delay: 0.4s;
+}
+
+/* Loading streaming info */
+.loading-streaming-info {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.loading-country-blocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.loading-country-block {
+  height: 180px;
+  background: linear-gradient(145deg, rgba(46, 46, 46, 0.7), rgba(35, 35, 35, 0.7));
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-country-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.05) 50%, 
+    transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Make the loading animation more subtle on smaller screens */
+@media (max-width: 768px) {
+  .loading-country-blocks {
+    grid-template-columns: 1fr;
+  }
+  
+  .loading-country-block {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading-pulse {
+    height: 14px;
+  }
+  
+  .loading-genre-tag {
+    height: 20px;
+  }
+  
+  .loading-country-block {
+    height: 120px;
+  }
+}

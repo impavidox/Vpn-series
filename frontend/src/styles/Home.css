@@ -74,6 +74,11 @@
     align-items: center;
     line-height: 1;
   }
+
+  .logo-image {
+    height: 6vh; /* Adjust this value to match your design */
+    width: auto;
+  }
   
   .logo-part-1 {
     color: var(--blue);
