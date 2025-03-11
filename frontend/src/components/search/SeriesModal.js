@@ -41,7 +41,7 @@ const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) 
         <div className="modal-title-banner">
           <h1>{series.title || 'Untitled'}</h1>
           <div className="modal-meta">
-            <span className="modal-year">{series.year || 'Unknown year'}</span>
+            <span className="modal-year">{series.year || series.release_year}</span>
             <span className="separator">•</span>
             <span className="modal-rating">
               ⭐ {series.vote_average || '?'} ({series.vote_count || 0} votes)

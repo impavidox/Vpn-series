@@ -72,7 +72,7 @@ def get_mongo_client():
         
         # Select database and collection
         db = client['vpn-series-db']
-        collection = db['series_collectiontmdb']
+        collection = db['content_collection']
         
         return collection
     
@@ -188,8 +188,9 @@ def get_projection(projection_type="minimal"):
         # Minimal projection for grid display (faster loading)
         return {
             "title": 1,
-            "vote_average": 1,
+            "content_type": 1,
             "year": 1,
+            "release_year": 1,
             "poster_path": 1,
             "_id": 1
         }
@@ -200,6 +201,7 @@ def get_projection(projection_type="minimal"):
             "vote_average": 1,
             "vote_count": 1,
             "year": 1,
+            "release_year": 1,
             "poster_path": 1,
             "backdrop_path": 1,
             "genres": 1,

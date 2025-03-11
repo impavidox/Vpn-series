@@ -1,4 +1,3 @@
 pymongo==4.6.1
 dnspython==2.6.1
 boto3==1.34.47
-bson==0.5.10

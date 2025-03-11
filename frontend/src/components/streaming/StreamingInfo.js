@@ -65,7 +65,6 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                   {countryDict[country] || country}
                 </div>
                 <ul className="provider-list">
-                  {console.log(providers)}
                   {Object.entries(providers).map(([providerName, providerInfo], providerIndex) => {
                     const seasonCount = parseInt(providerInfo.count);
                     const percentComplete = (seasonCount / totalSeasons) * 100;

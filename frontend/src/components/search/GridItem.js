@@ -27,14 +27,15 @@ const GridItem = ({ item, onClick }) => {
             e.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
           }}
         />
-        {item.vote_average && (
-          <div className="rating-badge">{item.vote_average.toFixed(1) || '?'}</div>
+        {console.log(item)}
+        {item.content_type && (
+          <div className="rating-badge">{item.content_type || '?'}</div>
         )}
       </div>
       
       <div className="info-container">
         <h2 className="series-title">{item.title || 'Untitled'}</h2>
-        <p className="series-year">{item.year || 'Unknown year'}</p>
+        <p className="series-year">{item.year || item.release_year}</p>
       </div>
     </div>
   );
