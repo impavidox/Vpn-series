@@ -34,10 +34,6 @@ const StreamingSelector = ({
       setIsLoading(true);
       try {
         // Load the country streaming providers data
-        const response = await fetch('/country_streaming_providers.json');
-        if (!response.ok) {
-          throw new Error('Failed to load streaming providers data');
-        }
         
         const data = countryStreaming
         
