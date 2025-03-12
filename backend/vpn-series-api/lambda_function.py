@@ -14,7 +14,9 @@ logger.setLevel(logging.INFO)
 CORS_ORIGINS = [
     'http://vpn-series-frontend.s3-website.eu-central-1.amazonaws.com',
     'http://localhost:3000',
-    'https://d32y6wudour403.cloudfront.net'
+    'https://d32y6wudour403.cloudfront.net',
+    'https://www.beyondvpn.tv',
+    'https://beyondvpn.tv'
 ]
 
 def custom_json_serializer(obj):
