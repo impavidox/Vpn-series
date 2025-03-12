@@ -16,8 +16,7 @@ const FilterTrigger = ({ activeFiltersCount = 0, onClick }) => {
       onClick={onClick} 
       aria-label="Open filters"
     >
-      <span className="filter-icon">🔍</span>
-      <span className="funnel-icon">⚙️</span>
+      <img className='funnel-icon' src='filter.svg'></img>
       {activeFiltersCount > 0 && (
         <span className="filter-count">{activeFiltersCount}</span>
       )}

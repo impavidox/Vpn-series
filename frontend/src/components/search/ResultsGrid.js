@@ -85,9 +85,6 @@ const ResultsGrid = ({
                 {appliedTitleFilter && ` for "${appliedTitleFilter}"`}
                 {appliedYearFilter && ` in ${appliedYearFilter}`}
                 {genreString && ` in genres: ${genreString}`}
-                {(totalResults !== '1000+' && safeData.length < totalResults) || totalResults === '1000+' ? (
-                  <span className="showing-count">Showing {safeData.length}</span>
-                ) : null}
               </>
             ) : isLoading && safeData.length === 0 ? (
               'Searching for content...'

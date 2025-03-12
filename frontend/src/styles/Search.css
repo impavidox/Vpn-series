@@ -45,6 +45,7 @@
   
   .search-header-content {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     max-width: 1400px;
@@ -717,7 +718,7 @@
   
   @media (max-width: 768px) {
     .search-header-content {
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       text-align: center;
     }
@@ -1165,7 +1166,7 @@
     align-self: flex-end;
     margin-top: -30px; /* Pull up to be on same line */
   }
-  
+
   /* Show counts on a new line */
   .showing-count {
     display: block;

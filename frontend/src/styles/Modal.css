@@ -387,7 +387,7 @@
   padding: 0; /* Remove default padding */
 }
 
-.close-button span {
+.close-button img {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -397,8 +397,6 @@
   text-align: center;
   font-size: 26px; /* Slightly larger for better visibility */
   position: relative;
-  top: -1px; /* Fine-tune vertical position */
-  left: 0.5px; /* Fine-tune horizontal position if needed */
 }
 
 .close-button:hover {
@@ -434,7 +432,7 @@
     height: 36px;
   }
   
-  .close-button span {
+  .close-button img {
     font-size: 24px;
   }
 }

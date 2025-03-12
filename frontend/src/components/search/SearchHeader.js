@@ -29,6 +29,9 @@ const SearchHeader = ({
   return (
     <div className={`search-header ${animationComplete ? 'animate-in' : ''}`}>
       <div className="search-header-content">
+        <div className="search-info" >
+          <span className="region-icon">📍</span>
+        </div>
         <Logo onClick={onLogoClick} />
         
         <HeaderSearch 
@@ -36,23 +39,7 @@ const SearchHeader = ({
           onSearch={onSearch} 
         />
         
-        <div className="search-info" >
-          <div className="search-region">
-            <span className="region-icon">📍</span>
-            <span className="region-text">
-              Browsing content in <span className="highlight">{countryName}</span>
-            </span>
-          </div>
-          
-          <div className="search-streaming">
-            <span className="streaming-icon">📺</span>
-            <span className="streaming-text">
-              {selectedStreamingProviders && selectedStreamingProviders.length > 0 
-                ? `Filtering for ${selectedStreamingProviders.join(', ')}`
-                : 'All streaming services'}
-            </span>
-          </div>
-        </div>
+
       </div>
     </div>
   );

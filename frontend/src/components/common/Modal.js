@@ -44,17 +44,17 @@ const Modal = ({ isOpen, onClose, children, className = '' }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose} aria-modal="true" role="dialog">
-      <div 
-        className={`modal-content ${className}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button 
+              <button 
           className="close-button" 
           onClick={onClose}
           aria-label="Close modal"
         >
-          <span>×</span>
+          <img src='x.svg'></img>
         </button>
+      <div 
+        className={`modal-content ${className}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         {children}
       </div>
     </div>

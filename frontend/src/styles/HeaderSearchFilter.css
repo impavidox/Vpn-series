@@ -1,7 +1,7 @@
 /* Header Search Styles */
 .header-search {
   flex: 1;
-  max-width: 500px;
+  max-width: 5px;
   margin: 0 20px;
 }
 
@@ -395,8 +395,7 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .header-search {
-    margin: 10px 0;
-    max-width: none;
+    max-width: 5px;
   }
   
   .search-input-wrapper {
