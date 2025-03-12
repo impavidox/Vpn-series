@@ -801,7 +801,6 @@ def get_worker_id_with_locks():
     # Create a unique index on worker_id to enforce uniqueness and TTL index
     try:
         locks_collection.create_index("worker_id", unique=True)
-        locks_collection.create_index("created_at", expireAfterSeconds=3600)
     except Exception as e:
         logger.info(f"Index may already exist: {e}")
     

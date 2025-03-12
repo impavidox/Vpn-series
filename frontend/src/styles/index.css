@@ -90,11 +90,6 @@
     background: var(--scrollbar-thumb-hover);
   }
   
-  /* Global focus styles for accessibility */
-  :focus {
-    outline: 2px solid var(--blue);
-    outline-offset: 2px;
-  }
   
   /* Reset button styles */
   button {
