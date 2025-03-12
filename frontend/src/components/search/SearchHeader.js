@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Logo from '../common/Logo';
-import HeaderSearch from './HeaderSearch';
 import { getCountryName } from '../../utils/helpers';
 import countryDict from '../../country_dict.json';
 
@@ -29,17 +28,9 @@ const SearchHeader = ({
   return (
     <div className={`search-header ${animationComplete ? 'animate-in' : ''}`}>
       <div className="search-header-content">
-        <div className="search-info" >
-          <span className="region-icon">📍</span>
-        </div>
+        <img className="hamburger-img" src='hamburger.svg'></img>
         <Logo onClick={onLogoClick} />
-        
-        <HeaderSearch 
-          initialValue={titleFilter} 
-          onSearch={onSearch} 
-        />
-        
-
+        <img className="search-img" src='search.svg'></img>
       </div>
     </div>
   );

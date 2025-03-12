@@ -72,10 +72,17 @@
   justify-content: space-between;
   align-items: center;
   max-width: var(--max-content-width);
-  margin: 0 auto;
   padding: var(--content-padding);
   width: 100%;
   box-sizing: border-box;
+  max-height: 7vh;
+  margin-top: 40px;
+}
+
+
+.hamburger-img{
+  height: 70%;
+  width: 70%;
 }
 
 /* Search Info Section */
@@ -903,5 +910,67 @@
 @media (max-width: 360px) {
   .image-container {
     height: 140px;
+  }
+}
+
+
+/* Updated header content styles */
+.search-header-content {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap:10px;
+  align-items: center;
+  max-width: var(--max-content-width);
+  margin: 1vh auto;
+  padding: var(--content-padding);
+  width: 80%;
+  box-sizing: border-box;
+  height: 60px; /* Set a fixed height for the header */
+}
+
+/* Style for all header elements to maintain consistent height */
+.search-header-content .hamburger-img,
+.search-header-content .search-img,
+.search-header-content .Logo {
+  height: 7vh; /* Consistent height for all elements */
+  width: auto; /* Maintain aspect ratio */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Logo specific styles if needed */
+.Logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+}
+
+/* Remove specific hamburger-img style that was setting it to 70% */
+.hamburger-img {
+  height: 30px;
+  width: auto;
+}
+
+/* Add the search-img style */
+.search-img {
+  height: 30px;
+  width: auto;
+}
+
+/* For mobile responsiveness */
+@media (max-width: 480px) {
+  .search-header-content {
+    height: 50px; /* Slightly smaller on mobile */
+    width: 100%;
+  }
+  
+  .search-header-content .hamburger-img,
+  .search-header-content .search-img,
+  .search-header-content .Logo {
+    height: 40px; /* Smaller on mobile */
   }
 }

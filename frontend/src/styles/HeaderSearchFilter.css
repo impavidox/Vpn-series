@@ -75,8 +75,12 @@
 /* Header Search Styles */
 .header-search {
   flex: 1;
-  max-width: 5px;
   margin: 0 20px;
+}
+
+.search-img{
+  height: 70%;
+  width: 70%;
 }
 
 .search-input-wrapper {

@@ -139,11 +139,6 @@
     transition: all 0.3s ease;
   }
   
-  .feature-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    background-color: rgba(50, 50, 50, 0.8);
-  }
   
   .feature-icon {
     font-size: 1.5rem;
