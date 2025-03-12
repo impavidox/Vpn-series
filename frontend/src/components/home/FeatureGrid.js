@@ -19,12 +19,6 @@ const FeatureGrid = () => {
       description: 'Discover exclusive regional content not available at home'
     },
     {
-      icon: '📊',
-      iconColor: 'yellow',
-      title: 'Trending Analysis',
-      description: 'See what\'s popular in different countries right now'
-    },
-    {
       icon: '🔐',
       iconColor: 'green',
       title: 'Legal Access',

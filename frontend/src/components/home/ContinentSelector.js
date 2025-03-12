@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { CONTINENTS } from '../../constants/continents';
+import Logo from '../common/Logo';
 
 /**
  * Continent selection component for the home page
@@ -12,6 +13,7 @@ import { CONTINENTS } from '../../constants/continents';
 const ContinentSelector = ({ isActive, onContinentSelect }) => {
   return (
     <div className={`continent-container ${isActive ? 'active' : ''}`}>
+      <Logo showTagline={true} />
       <h2 className="section-title">Select Your Continent</h2>
       <div className="continent-grid">
         {CONTINENTS.map((continent) => (

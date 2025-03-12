@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import providerDict from '../../provider_dict.json';
 import countryStreaming from '../../country_streaming_providers.json';
+import Logo from '../common/Logo';
 
 /**
  * Streaming service selection component that shows providers based on selected country
@@ -69,6 +70,7 @@ const StreamingSelector = ({
 
   return (
     <div className={`streaming-container ${isActive ? 'active' : ''}`}>
+      <Logo showTagline={true} />
       <h2 className="section-title">Select Your Streaming Provider(s)</h2>
       
       {isLoading ? (

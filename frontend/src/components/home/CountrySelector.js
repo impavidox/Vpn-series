@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import countryDict from '../../country_dict.json';
+import Logo from '../common/Logo';
 
 /**
  * Country selection component for the home page
@@ -33,6 +34,7 @@ const CountrySelector = ({
 
   return (
     <div className={`country-container ${isActive ? 'active' : ''}`}>
+      <Logo showTagline={true} />
       <h2 className="section-title">Select Your Country</h2>
       {selectedContinent && (
         <h3 className="continent-subtitle">
