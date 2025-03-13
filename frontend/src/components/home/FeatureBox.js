@@ -1,19 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import '../../styles/components/FeatureBox.css';
 
 /**
- * Feature box component for the home page
- * 
- * @param {Object} props - Component props
- * @param {string} props.icon - Emoji icon to display
- * @param {string} props.iconColor - Color class for the icon
- * @param {string} props.title - Feature title
- * @param {string} props.description - Feature description
+ * Feature box for the welcome screen
  */
 const FeatureBox = ({ icon, iconColor, title, description }) => {
   return (
     <div className="feature-box">
-      <div className={`feature-icon ${iconColor}`}>{icon}</div>
+      <div className={`feature-icon ${iconColor}`} aria-hidden="true">{icon}</div>
       <div className="feature-content">
         <h3>{title}</h3>
         <p>{description}</p>

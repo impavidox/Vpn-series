@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../common/Modal';
-import StreamingInfo from '../../components/streaming/StreamingInfo';
+import StreamingInfo from '../streaming/StreamingInfo';
+import Loader from '../common/Loader';
 import { getImageUrl } from '../../utils/helpers';
+import '../../styles/components/SeriesModal.css';
 
 /**
  * Modal component for displaying series details
- * Updated to handle loading states for progressive loading
- * 
- * @param {Object} props - Component props
- * @param {Object} props.series - The selected series data
- * @param {Array} props.streamingProviders - Selected streaming providers
- * @param {boolean} props.isLoadingDetails - Whether detailed data is being loaded
- * @param {Function} props.onClose - Function to call when the modal is closed
  */
-const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) => {
+const SeriesModal = ({ 
+  series, 
+  streamingProviders, 
+  isLoadingDetails, 
+  onClose 
+}) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   
   // Reset image loaded state when series changes
@@ -25,11 +25,15 @@ const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) 
   if (!series) return null;
 
   return (
-    <Modal isOpen={!!series} onClose={onClose}>
+    <Modal 
+      isOpen={!!series} 
+      onClose={onClose}
+      className="series-modal"
+    >
       <div className="modal-image-container">
         <img
           src={getImageUrl(series.backdrop_path || series.poster_path, 'w1280')}
-          alt={series.title || 'Movie backdrop'}
+          alt={`${series.title || 'Movie'} backdrop`}
           className={`modal-image ${isImageLoaded ? 'loaded' : 'loading'}`}
           onLoad={() => setIsImageLoaded(true)}
           onError={(e) => {
@@ -39,16 +43,16 @@ const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) 
         />
         <div className="modal-gradient-overlay"></div>
         <div className="modal-title-banner">
-          <h1>{series.title || 'Untitled'}</h1>
+          <h1 id="modal-title">{series.title || 'Untitled'}</h1>
           <div className="modal-meta">
             <span className="modal-year">{series.year || series.release_year}</span>
-            <span className="separator">•</span>
+            <span className="separator" aria-hidden="true">•</span>
             <span className="modal-rating">
-              ⭐ {series.vote_average || '?'} ({series.vote_count || 0} votes)
+              <span aria-hidden="true">⭐</span> {series.vote_average || '?'} ({series.vote_count || 0} votes)
             </span>
             {series.number_of_seasons && (
               <>
-                <span className="separator">•</span>
+                <span className="separator" aria-hidden="true">•</span>
                 <span className="modal-seasons">
                   {series.number_of_seasons} Season{series.number_of_seasons !== 1 ? 's' : ''}
                 </span>
@@ -64,30 +68,25 @@ const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) 
           <h3 className="section-title">Overview</h3>
           {isLoadingDetails && !series.plot ? (
             <div className="loading-placeholder">
-              <div className="loading-pulse"></div>
-              <div className="loading-pulse"></div>
-              <div className="loading-pulse"></div>
+              <Loader size="small" text="" />
             </div>
           ) : (
             <p className="modal-plot">{series.plot || 'No overview available.'}</p>
           )}
         </div>
         
-        {/* Details Section - Only show if we have at least one of these properties */}
-        {/* or if we're still loading details */}
+        {/* Details Section */}
         {(isLoadingDetails || series.genres || series.actors || series.episode_run_time) && (
           <div className="modal-section">
             <h3 className="section-title">Details</h3>
             <div className="modal-details-grid">
-              {/* Genres - Show placeholder if loading and no genres data yet */}
+              {/* Genres */}
               {isLoadingDetails && !series.genres ? (
                 <div className="detail-item">
                   <span className="detail-label">Genre</span>
                   <div className="detail-value genre-tags">
                     <div className="loading-genre-tags">
-                      <span className="loading-genre-tag"></span>
-                      <span className="loading-genre-tag"></span>
-                      <span className="loading-genre-tag"></span>
+                      <Loader size="small" text="" />
                     </div>
                   </div>
                 </div>
@@ -102,12 +101,12 @@ const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) 
                 </div>
               ) : null}
               
-              {/* Cast - Show placeholder if loading and no actors data yet */}
+              {/* Cast */}
               {isLoadingDetails && !series.actors ? (
                 <div className="detail-item">
                   <span className="detail-label">Cast</span>
                   <div className="loading-placeholder">
-                    <div className="loading-pulse shorter"></div>
+                    <Loader size="small" text="" />
                   </div>
                 </div>
               ) : series.actors && series.actors.length > 0 ? (
@@ -117,12 +116,12 @@ const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) 
                 </div>
               ) : null}
               
-              {/* Episode Length - Show placeholder if loading and no episode_run_time data yet */}
+              {/* Episode Length */}
               {isLoadingDetails && !series.episode_run_time ? (
                 <div className="detail-item">
                   <span className="detail-label">Episode Length</span>
                   <div className="loading-placeholder">
-                    <div className="loading-pulse shorter"></div>
+                    <Loader size="small" text="" />
                   </div>
                 </div>
               ) : series.episode_run_time ? (
@@ -140,10 +139,7 @@ const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) 
           <h3 className="section-title">Where to Watch</h3>
           {isLoadingDetails && !series.provider_data ? (
             <div className="loading-streaming-info">
-              <div className="loading-country-blocks">
-                <div className="loading-country-block"></div>
-                <div className="loading-country-block"></div>
-              </div>
+              <Loader text="Loading streaming information..." />
             </div>
           ) : (
             <StreamingInfo 
@@ -161,11 +157,7 @@ SeriesModal.propTypes = {
   series: PropTypes.object,
   streamingProviders: PropTypes.array,
   isLoadingDetails: PropTypes.bool,
-  onClose: PropTypes.func.isRequired
-};
-
-SeriesModal.defaultProps = {
-  isLoadingDetails: false
+  onClose: PropTypes.func.isRequired,
 };
 
 export default SeriesModal;

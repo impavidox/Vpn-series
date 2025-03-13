@@ -1,13 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import '../../styles/components/FilterTrigger.css';
 
 /**
- * Filter trigger component with funnel icon
- * Used to open the filter popup
- * 
- * @param {Object} props - Component props
- * @param {number} props.activeFiltersCount - Number of active filters
- * @param {Function} props.onClick - Function to call when button is clicked
+ * Button to trigger filter popup
  */
 const FilterTrigger = ({ activeFiltersCount = 0, onClick }) => {
   return (
@@ -16,9 +12,11 @@ const FilterTrigger = ({ activeFiltersCount = 0, onClick }) => {
       onClick={onClick} 
       aria-label="Open filters"
     >
-      <img className='funnel-icon' src='filter.svg'></img>
+      <img className='funnel-icon' src='filter.svg' alt="" aria-hidden="true" />
       {activeFiltersCount > 0 && (
-        <span className="filter-count">{activeFiltersCount}</span>
+        <span className="filter-count" aria-label={`${activeFiltersCount} active filters`}>
+          {activeFiltersCount}
+        </span>
       )}
     </button>
   );

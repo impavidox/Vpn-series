@@ -1,8 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AppProvider } from './context/AppContext';
+import { UserSelectionProvider } from './context/UserSelectionContext';
+import { SearchProvider } from './context/SearchContext';
 import Home from './pages/Home';
 import Search from './pages/Search';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import './styles/index.css';
 
 /**
@@ -11,17 +13,19 @@ import './styles/index.css';
  */
 function App() {
   return (
-    <AppProvider>
-      <Router>
-        <Routes>
-          {/* Home page route */}
-          <Route path="/" element={<Home />} />
-
-          {/* Search page route */}
-          <Route path="/search" element={<Search />} />
-        </Routes>
-      </Router>
-    </AppProvider>
+    <ErrorBoundary>
+      <UserSelectionProvider>
+        <SearchProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="*" element={<Home />} />
+            </Routes>
+          </Router>
+        </SearchProvider>
+      </UserSelectionProvider>
+    </ErrorBoundary>
   );
 }
 

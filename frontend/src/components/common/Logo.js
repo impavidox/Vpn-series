@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import '../../styles/components/Logo.css';
 
 /**
- * Reusable Logo component
- * @param {Object} props - Component props
- * @param {boolean} props.showTagline - Whether to show the tagline
- * @param {Function} props.onClick - Click handler
+ * Logo component with optional tagline
  */
 const Logo = ({ showTagline = false, onClick }) => {
   return (
@@ -22,7 +20,7 @@ const Logo = ({ showTagline = false, onClick }) => {
             e.target.parentNode.innerHTML = `
               <span class="logo-part-1">Beyond</span>
               <span class="logo-part-2">VPN</span>
-              <span class="logo-emoji">🌍</span>
+              <span class="logo-emoji" aria-hidden="true">🌍</span>
             `;
           }}
         />

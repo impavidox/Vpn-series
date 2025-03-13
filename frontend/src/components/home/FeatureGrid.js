@@ -1,8 +1,9 @@
 import React from 'react';
 import FeatureBox from './FeatureBox';
+import '../../styles/components/FeatureGrid.css';
 
 /**
- * Grid of feature boxes for the home page
+ * Grid of feature boxes for the welcome screen
  */
 const FeatureGrid = () => {
   const features = [

@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Logo from '../common/Logo';
+import Button from '../common/Button';
 import FeatureGrid from './FeatureGrid';
+import '../../styles/components/WelcomeScreen.css';
 
 /**
  * Welcome screen component for the home page
- * 
- * @param {Object} props - Component props
- * @param {boolean} props.isActive - Whether this screen is active
- * @param {Function} props.onBeginClick - Function to call when the Begin button is clicked
  */
 const WelcomeScreen = ({ isActive, onBeginClick }) => {
   return (
@@ -23,9 +21,16 @@ const WelcomeScreen = ({ isActive, onBeginClick }) => {
       
       <FeatureGrid />
       
-      <button onClick={onBeginClick} className="discover-button">
+      <Button 
+        onClick={onBeginClick} 
+        className="discover-button" 
+        variant="primary"
+        size="large"
+        isFullWidth
+        disabled={!isActive}
+      >
         Begin Your Journey
-      </button>
+      </Button>
     </div>
   );
 };

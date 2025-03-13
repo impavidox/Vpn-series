@@ -5,7 +5,7 @@
   height: 100%;
   overflow: hidden;
   pointer-events: none;
-  z-index: 0;
+  z-index: var(--z-index-background);
 }
 
 .bg-orb {
@@ -13,13 +13,13 @@
   border-radius: 50%;
   filter: blur(60px);
   opacity: 0.2;
-  animation: float 6s cubic-bezier(0.4, 0, 0.2, 1) infinite; /* Even faster with more dynamic timing function */
+  animation: float 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .orb-cyan {
   width: 500px;
   height: 500px;
-  background-color: var(--blue);
+  background-color: var(--color-primary);
   top: 10%;
   left: 10%;
   animation-delay: 0s;
@@ -29,25 +29,25 @@
 .orb-orange {
   width: 400px;
   height: 400px;
-  background-color: var(--orange);
+  background-color: var(--color-secondary);
   bottom: 15%;
   right: 15%;
-  animation-delay: 1s; /* Shorter delay */
-  animation-name: float-2; /* Different animation pattern */
+  animation-delay: 1s;
+  animation-name: float-2;
 }
 
 .orb-yellow {
   width: 450px;
   height: 450px;
-  background-color: var(--yellow);
+  background-color: var(--color-accent);
   top: 50%;
   left: 50%;
-  animation-delay: 2s; /* Shorter delay */
-  animation-name: float-3; /* Different animation pattern */
+  animation-delay: 2s;
+  animation-name: float-3;
   opacity: 0.15;
 }
 
-/* More dynamic animations with different patterns for each orb */
+/* Different animation patterns for each orb */
 @keyframes float-1 {
   0% { transform: translate(0, 0) rotate(0deg) scale(1); }
   25% { transform: translate(30px, 20px) rotate(5deg) scale(1.05); }
@@ -74,8 +74,8 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .bg-orb {
-    filter: blur(40px); /* Less blur for better performance */
-    animation-duration: 8s; /* Slightly slower on mobile for battery optimization */
+    filter: blur(40px);
+    animation-duration: 8s;
   }
   
   .orb-cyan {
@@ -103,7 +103,7 @@
 /* Small screen optimizations */
 @media (max-width: 480px) {
   .bg-orb {
-    filter: blur(30px); /* Even less blur for better performance */
+    filter: blur(30px);
   }
   
   .orb-cyan {

@@ -1,35 +1,44 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { getImageUrl } from '../../utils/helpers';
+import '../../styles/components/GridItem.css';
 
 /**
- * Grid item component for showing a show/movie in the search results
- * Fixed version to ensure proper styling and layout
- * 
- * @param {Object} props - Component props
- * @param {Object} props.item - The show/movie data
- * @param {Function} props.onClick - Function to call when the item is clicked
+ * Grid item component for showing a show/movie in search results
  */
-const GridItem = ({ item, onClick }) => {
+const GridItem = memo(({ item, onClick }) => {
   const handleClick = () => {
     onClick(item);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick(item);
+    }
+  };
+
   return (
-    <div className="grid-item" onClick={handleClick}>
+    <div 
+      className="grid-item" 
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-label={`View details for ${item.title || 'Movie'}`}
+    >
       <div className="image-container">
         <img
           src={getImageUrl(item.poster_path, 'w500')}
-          alt={item.title || 'Movie poster'}
+          alt={item.title ? `${item.title} poster` : 'Movie poster'}
           className="series-image"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
           }}
         />
-        {console.log(item)}
         {item.content_type && (
-          <div className="rating-badge">{item.content_type || '?'}</div>
+          <div className="rating-badge">{item.content_type}</div>
         )}
       </div>
       
@@ -39,11 +48,13 @@ const GridItem = ({ item, onClick }) => {
       </div>
     </div>
   );
-};
+});
 
 GridItem.propTypes = {
   item: PropTypes.object.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
 };
+
+GridItem.displayName = 'GridItem';
 
 export default GridItem;

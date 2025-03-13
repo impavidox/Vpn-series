@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useUserSelection } from '../context/UserSelectionContext';
 
-// Component imports
+// Components
 import AnimatedBackground from '../components/common/AnimatedBackground';
 import Footer from '../components/common/Footer';
 import WelcomeScreen from '../components/home/WelcomeScreen';
 import ContinentSelector from '../components/home/ContinentSelector';
 import CountrySelector from '../components/home/CountrySelector';
 import StreamingSelector from '../components/home/StreamingSelector';
+import SkipLink from '../components/common/SkipLink';
+import ErrorBoundary from '../components/common/ErrorBoundary';
 
 // Styles
-import '../styles/Home.css';
+import '../styles/pages/Home.css';
 
 /**
- * Home page component
- * Contains all the steps for setting up search criteria
+ * Home page component with multi-step selection process
  */
 const Home = () => {
   // Navigation
@@ -26,10 +27,11 @@ const Home = () => {
     selectedCountry,
     setSelectedCountry,
     selectedStreaming,
-    setSelectedStreaming,
+    handleStreamingSelection,
     selectedContinent,
-    setSelectedContinent
-  } = useAppContext();
+    setSelectedContinent,
+    resetSelections
+  } = useUserSelection();
 
   // Local state
   const [phase, setPhase] = useState(1);
@@ -45,12 +47,6 @@ const Home = () => {
     };
   }, []);
 
-  // Clear streaming selection when country changes
-  useEffect(() => {
-    // Reset streaming selections when a new country is selected
-    setSelectedStreaming([]);
-  }, [selectedCountry, setSelectedStreaming]);
-
   // Handle selection of a continent
   const handleContinentSelect = (continent) => {
     setSelectedContinent(continent);
@@ -62,22 +58,9 @@ const Home = () => {
     setSelectedCountry(country);
   };
 
-  // Handle selection of streaming services
-  const handleStreamingSelection = (streaming) => {
-    setSelectedStreaming((prevSelected) =>
-      prevSelected.includes(streaming)
-        ? prevSelected.filter((s) => s !== streaming)
-        : [...prevSelected, streaming]
-    );
-  };
-
   // Navigate to search page with selected filters
   const handleStartExploring = () => {
-    const filterCriteria = {
-      country: selectedCountry?.id,
-      streaming: selectedStreaming,
-    };
-    navigate('/search', { state: filterCriteria });
+    navigate('/search');
   };
 
   // Go back to a previous step
@@ -85,45 +68,51 @@ const Home = () => {
 
   return (
     <div className={`home-container ${animateBackground ? 'animated-background' : ''}`}>
+      <SkipLink targetId="main-content" />
+      
       {/* Animated background */}
       <AnimatedBackground />
       
-      {/* Welcome screen */}
-      <WelcomeScreen 
-        isActive={phase === 1} 
-        onBeginClick={() => setPhase(2)} 
-      />
+      <main id="main-content">
+        <ErrorBoundary>
+          {/* Welcome screen */}
+          <WelcomeScreen 
+            isActive={phase === 1} 
+            onBeginClick={() => setPhase(2)} 
+          />
 
-      {/* Continent selection */}
-      <ContinentSelector 
-        isActive={phase === 2}
-        onContinentSelect={handleContinentSelect}
-      />
+          {/* Continent selection */}
+          <ContinentSelector 
+            isActive={phase === 2}
+            onContinentSelect={handleContinentSelect}
+          />
 
-      {/* Country selection */}
-      <CountrySelector 
-        isActive={phase === 3}
-        selectedContinent={selectedContinent}
-        selectedCountry={selectedCountry}
-        onCountrySelect={handleCountrySelect}
-        onBack={() => handleBack(2)}
-        onNext={() => {
-          // Only proceed if a country is selected
-          if (selectedCountry) {
-            setPhase(4);
-          }
-        }}
-      />
+          {/* Country selection */}
+          <CountrySelector 
+            isActive={phase === 3}
+            selectedContinent={selectedContinent}
+            selectedCountry={selectedCountry}
+            onCountrySelect={handleCountrySelect}
+            onBack={() => handleBack(2)}
+            onNext={() => {
+              // Only proceed if a country is selected
+              if (selectedCountry) {
+                setPhase(4);
+              }
+            }}
+          />
 
-      {/* Streaming services selection */}
-      <StreamingSelector 
-        isActive={phase === 4}
-        selectedCountry={selectedCountry}
-        selectedStreaming={selectedStreaming}
-        onStreamingSelect={handleStreamingSelection}
-        onBack={() => handleBack(3)}
-        onExplore={handleStartExploring}
-      />
+          {/* Streaming services selection */}
+          <StreamingSelector 
+            isActive={phase === 4}
+            selectedCountry={selectedCountry}
+            selectedStreaming={selectedStreaming}
+            onStreamingSelect={handleStreamingSelection}
+            onBack={() => handleBack(3)}
+            onExplore={handleStartExploring}
+          />
+        </ErrorBoundary>
+      </main>
       
       {/* Footer */}
       <Footer />

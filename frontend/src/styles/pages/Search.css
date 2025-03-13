@@ -1,0 +1,22 @@
+.search-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  .search-page main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: var(--spacing-xl);
+  }
+  
+  @media (max-width: 768px) {
+    .search-page main {
+      padding-bottom: var(--spacing-lg);
+    }
+  }

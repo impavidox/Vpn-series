@@ -1,26 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import '../../styles/components/Loader.css';
 
 /**
- * Reusable loading spinner component
- * @param {Object} props - Component props
- * @param {string} props.text - Text to display with the loader
- * @param {boolean} props.visible - Whether the loader is visible
+ * Loading spinner component
  */
-const Loader = ({ text = 'Loading...', visible = true }) => {
+const Loader = ({ 
+  text = 'Loading...', 
+  visible = true, 
+  size = 'medium', 
+  fullPage = false 
+}) => {
   if (!visible) return null;
   
+  const sizeClass = `loader-${size}`;
+  const containerClass = fullPage ? 'loader-fullpage' : 'loader-container';
+  
   return (
-    <div className="loading-container">
-      <div className="loading-spinner"></div>
-      {text && <p>{text}</p>}
+    <div className={containerClass} aria-busy="true" role="status">
+      <div className={`loader-spinner ${sizeClass}`} aria-hidden="true"></div>
+      {text && <p className="loader-text">{text}</p>}
     </div>
   );
 };
 
 Loader.propTypes = {
   text: PropTypes.string,
-  visible: PropTypes.bool
+  visible: PropTypes.bool,
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  fullPage: PropTypes.bool,
 };
 
 export default Loader;

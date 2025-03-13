@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../../styles/Footer.css';
+import '../../styles/components/Footer.css';
 
 /**
- * Reusable footer component
- * @param {Object} props - Component props
- * @param {string} props.text - Footer text
+ * Footer component to display at the bottom of pages
  */
-const Footer = ({ text = '© 2025 BeyondFlix | Not affiliated with any streaming service' }) => {
+const Footer = ({ text = '© 2025 BeyondVPN | Not affiliated with any streaming service' }) => {
   return (
-    <div className="footer">
+    <footer className="footer">
       <p>{text}</p>
-    </div>
+    </footer>
   );
 };
 

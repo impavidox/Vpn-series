@@ -2,13 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CONTINENTS } from '../../constants/continents';
 import Logo from '../common/Logo';
+import '../../styles/components/ContinentSelector.css';
 
 /**
  * Continent selection component for the home page
- * 
- * @param {Object} props - Component props
- * @param {boolean} props.isActive - Whether this screen is active
- * @param {Function} props.onContinentSelect - Function to call when a continent is selected
  */
 const ContinentSelector = ({ isActive, onContinentSelect }) => {
   return (
@@ -21,9 +18,18 @@ const ContinentSelector = ({ isActive, onContinentSelect }) => {
             key={continent.id}
             className="continent-item"
             onClick={() => onContinentSelect(continent)}
+            role="button"
+            tabIndex={isActive ? 0 : -1}
+            aria-label={`Select ${continent.name}`}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onContinentSelect(continent);
+              }
+            }}
           >
             <div className={`continent-inner bg-gradient-to-br ${continent.colors}`}>
-              <div className="continent-icon">{continent.icon}</div>
+              <div className="continent-icon" aria-hidden="true">{continent.icon}</div>
               <div className="continent-name">{continent.name}</div>
             </div>
           </div>

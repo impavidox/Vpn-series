@@ -1,15 +1,14 @@
-/* Footer styles */
 .footer {
     position: absolute;
     bottom: 15px;
     width: 100%;
     text-align: center;
     font-size: 0.75rem;
-    color: #777;
+    color: var(--text-muted);
     z-index: 1;
+    padding: var(--spacing-sm);
   }
   
-  /* Responsive adjustment */
   @media (max-width: 768px) {
     .footer {
       font-size: 0.7rem;

@@ -1,0 +1,93 @@
+.error-boundary {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-dark);
+    padding: var(--spacing-lg);
+  }
+  
+  .error-container {
+    background-color: var(--bg-dark-lighter);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+    max-width: 600px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeInUp 0.5s var(--ease-out);
+  }
+  
+  .error-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .error-container h2 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-secondary);
+  }
+  
+  .error-container p {
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  
+  .error-details {
+    margin: var(--spacing-lg) 0;
+    text-align: left;
+    background-color: var(--bg-dark-darker);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    max-height: 200px;
+    overflow: auto;
+  }
+  
+  .error-details summary {
+    cursor: pointer;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  
+  .error-message {
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-sm);
+    font-family: monospace;
+    word-break: break-all;
+  }
+  
+  .stack-trace {
+    color: var(--text-muted);
+    font-family: monospace;
+    white-space: pre-wrap;
+    font-size: var(--font-size-sm);
+  }
+  
+  .error-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+  }
+  
+  @media (max-width: 480px) {
+    .error-container {
+      padding: var(--spacing-lg);
+    }
+    
+    .error-icon {
+      font-size: 3rem;
+    }
+    
+    .error-container h2 {
+      font-size: var(--font-size-lg);
+    }
+    
+    .error-actions {
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+  }

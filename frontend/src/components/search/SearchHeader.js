@@ -2,21 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Logo from '../common/Logo';
 import { getCountryName } from '../../utils/helpers';
-import countryDict from '../../country_dict.json';
+import countryDict from '../../constants/countryDict';
+import '../../styles/components/SearchHeader.css';
 
 /**
- * Updated Header component for the search page that includes search bar
- * 
- * @param {Object} props - Component props
- * @param {boolean} props.animationComplete - Whether animations are complete
- * @param {string} props.country - Country code
- * @param {Array} props.selectedStreamingProviders - Selected streaming providers
- * @param {Function} props.onLogoClick - Function to call when the logo is clicked
- * @param {string} props.titleFilter - Current title filter
- * @param {Function} props.onSearch - Function to call when search is performed
+ * Header component for the search page
  */
 const SearchHeader = ({
-  animationComplete,
   country,
   selectedStreamingProviders,
   onLogoClick,
@@ -26,18 +18,27 @@ const SearchHeader = ({
   const countryName = getCountryName(country, countryDict);
 
   return (
-    <div className={`search-header ${animationComplete ? 'animate-in' : ''}`}>
+    <div className="search-header">
       <div className="search-header-content">
-        <img className="hamburger-img" src='hamburger.svg'></img>
+        <button className="menu-button" aria-label="Menu">
+          <img className="hamburger-img" src='hamburger.svg' alt="" aria-hidden="true" />
+        </button>
+        
         <Logo onClick={onLogoClick} />
-        <img className="search-img" src='search.svg'></img>
+        
+        <button 
+          className="search-button"
+          aria-label="Search"
+          onClick={() => onSearch && onSearch(titleFilter)}
+        >
+          <img className="search-img" src='search.svg' alt="" aria-hidden="true" />
+        </button>
       </div>
     </div>
   );
 };
 
 SearchHeader.propTypes = {
-  animationComplete: PropTypes.bool.isRequired,
   country: PropTypes.string,
   selectedStreamingProviders: PropTypes.array,
   onLogoClick: PropTypes.func.isRequired,

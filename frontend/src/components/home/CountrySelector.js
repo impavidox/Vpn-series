@@ -1,18 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import countryDict from '../../country_dict.json';
 import Logo from '../common/Logo';
+import Button from '../common/Button';
+import { getCountryName } from '../../utils/helpers';
+import countryDict from '../../constants/countryDict';
+import '../../styles/components/CountrySelector.css';
 
 /**
  * Country selection component for the home page
- * 
- * @param {Object} props - Component props
- * @param {boolean} props.isActive - Whether this screen is active
- * @param {Object} props.selectedContinent - The selected continent
- * @param {Object} props.selectedCountry - The currently selected country
- * @param {Function} props.onCountrySelect - Function to call when a country is selected
- * @param {Function} props.onBack - Function to call when the back button is clicked
- * @param {Function} props.onNext - Function to call when the next button is clicked
  */
 const CountrySelector = ({
   isActive,
@@ -22,13 +17,14 @@ const CountrySelector = ({
   onBack,
   onNext
 }) => {
+  // Get the countries for the selected continent
   const getCountriesForContinent = () => {
     if (!selectedContinent) return [];
     
     const continentCountryCodes = selectedContinent.countries || [];
     return continentCountryCodes.map(code => ({
       id: code,
-      name: countryDict[code] || code
+      name: getCountryName(code, countryDict)
     }));
   };
 
@@ -38,22 +34,35 @@ const CountrySelector = ({
       <h2 className="section-title">Select Your Country</h2>
       {selectedContinent && (
         <h3 className="continent-subtitle">
-          <span className="subtitle-icon">{selectedContinent.icon}</span>
+          <span className="subtitle-icon" aria-hidden="true">{selectedContinent.icon}</span>
           <span>{selectedContinent.name}</span>
         </h3>
       )}
       
-      <div className="country-grid">
+      <div 
+        className="country-grid"
+        role="listbox"
+        aria-label="Countries"
+      >
         {getCountriesForContinent().map((country) => (
           <div
             key={country.id}
             className={`country-item ${selectedCountry?.id === country.id ? 'selected' : ''}`}
             onClick={() => onCountrySelect(country)}
+            role="option"
+            tabIndex={isActive ? 0 : -1}
+            aria-selected={selectedCountry?.id === country.id}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onCountrySelect(country);
+              }
+            }}
           >
             <div className="flag-container">
               <img 
                 src={`https://flagcdn.com/w80/${country.id.toLowerCase()}.png`}
-                alt={`${country.name} flag`}
+                alt=""
                 className="flag-image"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -67,14 +76,20 @@ const CountrySelector = ({
       </div>
       
       <div className="button-container">
-        <button onClick={onBack} className="back-button">Back</button>
-        <button
+        <Button 
+          onClick={onBack} 
+          variant="outline"
+          disabled={!isActive}
+        >
+          Back
+        </Button>
+        <Button
           onClick={onNext}
-          className="next-button"
-          disabled={!selectedCountry}
+          variant="primary"
+          disabled={!selectedCountry || !isActive}
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );

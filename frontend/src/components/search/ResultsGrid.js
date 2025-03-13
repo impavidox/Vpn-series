@@ -1,27 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import GridItem from './GridItem';
 import InfiniteScrollLoader from './InfiniteScrollLoader';
 import FilterTrigger from './FilterTrigger';
 import FilterPopup from './FilterPopup';
+import ErrorMessage from '../common/ErrorMessage';
+import Loader from '../common/Loader';
 import { formatResultsCount } from '../../utils/helpers';
 import { GENRES } from '../../constants/genres';
+import '../../styles/components/ResultsGrid.css';
 
 /**
- * Updated Grid component for displaying search results with filter popup
- * 
- * @param {Object} props - Component props
- * @param {Array} props.data - Array of search results
- * @param {boolean} props.isLoading - Whether data is loading
- * @param {boolean} props.hasMore - Whether there are more results to load
- * @param {string|number} props.totalResults - Total number of results
- * @param {string} props.appliedTitleFilter - Applied title filter
- * @param {string} props.appliedYearFilter - Applied year filter
- * @param {Array} props.appliedGenreFilter - Applied genre filters
- * @param {boolean} props.animationComplete - Whether animations are complete
- * @param {Function} props.onItemClick - Function to call when an item is clicked
- * @param {Function} props.onApplyFilters - Function to call when filters are applied
- * @param {React.RefObject} props.loaderRef - Ref for the loader element
+ * Grid component for displaying search results
  */
 const ResultsGrid = ({
   data = [],
@@ -31,7 +21,7 @@ const ResultsGrid = ({
   appliedTitleFilter = '',
   appliedYearFilter = '',
   appliedGenreFilter = [],
-  animationComplete = false,
+  error = null,
   onItemClick,
   onApplyFilters,
   loaderRef
@@ -41,28 +31,32 @@ const ResultsGrid = ({
   
   // Ensure we have a valid data array
   const safeData = Array.isArray(data) ? data : [];
+  
+  // Format the results count for display
   const formattedResultsCount = formatResultsCount(totalResults, safeData.length);
 
   // Calculate active filters count
-  const activeFiltersCount = (
-    (appliedTitleFilter ? 1 : 0) + 
-    (appliedYearFilter ? 1 : 0) + 
-    appliedGenreFilter.length
-  );
+  const activeFiltersCount = useMemo(() => {
+    return (
+      (appliedTitleFilter ? 1 : 0) + 
+      (appliedYearFilter ? 1 : 0) + 
+      appliedGenreFilter.length
+    );
+  }, [appliedTitleFilter, appliedYearFilter, appliedGenreFilter]);
 
   // Get genre names for display
-  const getGenreNames = () => {
+  const genreNames = useMemo(() => {
     if (!appliedGenreFilter || appliedGenreFilter.length === 0) return '';
     
-    const genreNames = appliedGenreFilter.map(genreId => {
-      const genre = GENRES.find(g => g.id === genreId);
-      return genre ? genre.name : '';
-    }).filter(Boolean);
+    const names = appliedGenreFilter
+      .map(genreId => {
+        const genre = GENRES.find(g => g.id === genreId);
+        return genre ? genre.name : '';
+      })
+      .filter(Boolean);
     
-    return genreNames.join(', ');
-  };
-  
-  const genreString = getGenreNames();
+    return names.join(', ');
+  }, [appliedGenreFilter]);
 
   // Handle applying filters from the popup
   const handleApplyFilters = (title, year, genres) => {
@@ -73,7 +67,7 @@ const ResultsGrid = ({
   };
 
   return (
-    <div className={`results-section ${animationComplete ? 'animate-in' : ''}`}>
+    <div className="results-section">
       <div className="results-header">
         <div className="results-filter-container">
           <h2>
@@ -84,7 +78,7 @@ const ResultsGrid = ({
                 </span>
                 {appliedTitleFilter && ` for "${appliedTitleFilter}"`}
                 {appliedYearFilter && ` in ${appliedYearFilter}`}
-                {genreString && ` in genres: ${genreString}`}
+                {genreNames && ` in genres: ${genreNames}`}
               </>
             ) : isLoading && safeData.length === 0 ? (
               'Searching for content...'
@@ -100,7 +94,7 @@ const ResultsGrid = ({
         </div>
       </div>
 
-      {/* Filter popup with proper content and positioning */}
+      {/* Filter popup */}
       {isFilterPopupOpen && (
         <FilterPopup 
           isOpen={isFilterPopupOpen}
@@ -112,9 +106,17 @@ const ResultsGrid = ({
         />
       )}
 
+      {/* Error message */}
+      {error && (
+        <ErrorMessage 
+          message={error}
+          retryAction={() => onApplyFilters(appliedTitleFilter, appliedYearFilter, appliedGenreFilter)}
+        />
+      )}
+
+      {/* Grid of results */}
       <div className="grid-container">
         {safeData.map((item, index) => {
-          // Ensure item is valid
           if (!item) return null;
           
           return (
@@ -127,26 +129,32 @@ const ResultsGrid = ({
         })}
       </div>
 
-      {/* Only render the loader if we have a valid ref */}
-      {loaderRef && (
-        <InfiniteScrollLoader 
-          isLoading={isLoading}
-          hasMore={hasMore}
-          loaderRef={loaderRef}
-        />
+      {/* Loading indicator and infinity scroll loader */}
+      {isLoading && safeData.length === 0 ? (
+        <Loader text="Searching for shows..." />
+      ) : (
+        loaderRef && (
+          <InfiniteScrollLoader 
+            isLoading={isLoading}
+            hasMore={hasMore}
+            loaderRef={loaderRef}
+          />
+        )
       )}
 
-      {!hasMore && safeData.length > 0 && (
+      {/* End of results message */}
+      {!hasMore && safeData.length > 0 && !isLoading && (
         <div className="end-results-message">
-          <span className="end-icon">🎬</span>
+          <span className="end-icon" role="img" aria-label="Movie icon">🎬</span>
           <p>You've reached the end of the list! No more results to show.</p>
           <p className="end-suggestion">Maybe it's time to take a break? 🛋️🍿</p>
         </div>
       )}
 
-      {!isLoading && safeData.length === 0 && !hasMore && (
+      {/* No results message */}
+      {!isLoading && safeData.length === 0 && !error && (
         <div className="no-results-message">
-          <span className="no-results-icon">🔍</span>
+          <span className="no-results-icon" role="img" aria-label="Search icon">🔍</span>
           <p>No shows found matching your criteria.</p>
           <p>Try adjusting your filters or exploring different streaming services.</p>
         </div>
@@ -163,10 +171,10 @@ ResultsGrid.propTypes = {
   appliedTitleFilter: PropTypes.string,
   appliedYearFilter: PropTypes.string,
   appliedGenreFilter: PropTypes.array,
-  animationComplete: PropTypes.bool,
+  error: PropTypes.string,
   onItemClick: PropTypes.func.isRequired,
   onApplyFilters: PropTypes.func.isRequired,
-  loaderRef: PropTypes.object
+  loaderRef: PropTypes.object,
 };
 
-export default ResultsGrid;
+export default React.memo(ResultsGrid);

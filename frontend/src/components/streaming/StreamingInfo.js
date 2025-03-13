@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import providerDict from '../../provider_dict.json';
-import countryDict from '../../country_dict.json';
-import { filterProviders, calculateMaxSeasons } from '../../utils/helpers';
-import '../../styles/StreamingInfo.css';
+import { filterProviders, calculateMaxSeasons, getCountryName } from '../../utils/helpers';
+import countryDict from '../../constants/countryDict';
+import providerDict from '../../constants/providerDict';
+import '../../styles/components/StreamingInfo.css';
 
 /**
- * Streaming information component for the series modal
- * 
- * @param {Object} props - Component props
- * @param {Object} props.selectedSeries - The selected series data
- * @param {Array} props.streaming - Selected streaming providers
+ * Component to display streaming availability information
  */
 const StreamingInfo = ({ selectedSeries, streaming }) => {
   const [showAllCountries, setShowAllCountries] = useState(false);
@@ -25,6 +21,7 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Filter providers based on selected streaming services
   const getStreamingProviders = (selectedSeries) => {
     if (selectedSeries && selectedSeries.provider_data) {
       return filterProviders(selectedSeries.provider_data, streaming);
@@ -45,6 +42,7 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
         <div className="streaming-countries">
           {displayedCountries.map(([country, providers], countryIndex) => {
             const maxSeasons = calculateMaxSeasons(providers);
+            const countryName = getCountryName(country, countryDict);
             
             return (
               <div 
@@ -55,14 +53,15 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                 <div className="country-header">
                   <img 
                     src={`https://flagcdn.com/w40/${country.toLowerCase()}.png`}
-                    alt={`${country} flag`}
+                    alt=""
                     className="country-flag"
+                    aria-hidden="true"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.style.display = 'none';
                     }}
                   />
-                  {countryDict[country] || country}
+                  {countryName}
                 </div>
                 <ul className="provider-list">
                   {Object.entries(providers).map(([providerName, providerInfo], providerIndex) => {
@@ -74,7 +73,7 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                       <li key={providerIndex}>
                         <img 
                           src={`https://image.tmdb.org/t/p/w185/${providerDict[providerName] || ''}`} 
-                          alt={providerName} 
+                          alt={`${providerName} logo`} 
                           className="provider-icon" 
                           onError={(e) => {
                             e.target.onerror = null;
@@ -84,10 +83,9 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                         <div className="provider-info">
                           <div className="provider-header">
                             <span className="provider-name">{providerName}</span>
-                            {isComplete && <span className="availability-tag">Full Series</span>}
-                            {/* {providerInfo.type && (
-                              <span className="provider-type">{providerInfo.type}</span>
-                            )} */}
+                            {isComplete && (
+                              <span className="availability-tag">Full Series</span>
+                            )}
                           </div>
                           <span className="provider-seasons">
                             {seasonCount} of {totalSeasons} season{totalSeasons !== 1 ? 's' : ''}
@@ -96,6 +94,7 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                             <div 
                               className="season-progress-bar" 
                               style={{ width: `${percentComplete}%` }}
+                              aria-hidden="true"
                             ></div>
                           </div>
                         </div>
@@ -109,7 +108,10 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
   
           {countryEntries.length > 3 && (
             <div className="show-more-countries">
-              <button onClick={() => setShowAllCountries(!showAllCountries)}>
+              <button 
+                onClick={() => setShowAllCountries(!showAllCountries)}
+                aria-expanded={showAllCountries}
+              >
                 {showAllCountries ? "Show Less Countries" : `Show More Countries`}
               </button>
             </div>
@@ -122,7 +124,8 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
         </div>
       )}
     </div>
-  );};
+  );
+};
 
 StreamingInfo.propTypes = {
   selectedSeries: PropTypes.object,
