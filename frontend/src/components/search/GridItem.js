@@ -27,7 +27,6 @@ const GridItem = ({ item, onClick }) => {
             e.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
           }}
         />
-        {console.log(item)}
         {item.content_type && (
           <div className="rating-badge">{item.content_type || '?'}</div>
         )}

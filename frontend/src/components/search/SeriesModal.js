@@ -147,7 +147,7 @@ const SeriesModal = ({ series, streamingProviders, isLoadingDetails, onClose }) 
             </div>
           ) : (
             <StreamingInfo 
-              selectedSeries={series} 
+              selectedContent={series} 
               streaming={streamingProviders} 
             />
           )}

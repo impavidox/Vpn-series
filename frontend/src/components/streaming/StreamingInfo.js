@@ -6,13 +6,13 @@ import { filterProviders, calculateMaxSeasons } from '../../utils/helpers';
 import '../../styles/StreamingInfo.css';
 
 /**
- * Streaming information component for the series modal
+ * Streaming information component for both series and movies
  * 
  * @param {Object} props - Component props
- * @param {Object} props.selectedSeries - The selected series data
+ * @param {Object} props.selectedContent - The selected series or movie data
  * @param {Array} props.streaming - Selected streaming providers
  */
-const StreamingInfo = ({ selectedSeries, streaming }) => {
+const StreamingInfo = ({ selectedContent, streaming }) => {
   const [showAllCountries, setShowAllCountries] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   
@@ -25,26 +25,29 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const getStreamingProviders = (selectedSeries) => {
-    if (selectedSeries && selectedSeries.provider_data) {
-      return filterProviders(selectedSeries.provider_data, streaming);
+  const getStreamingProviders = (selectedContent) => {
+    if (selectedContent && selectedContent.provider_data) {
+      return filterProviders(selectedContent.provider_data, streaming);
     }
     return {};
   };
 
-  const providersData = getStreamingProviders(selectedSeries);
+  const providersData = getStreamingProviders(selectedContent);
   const countryEntries = Object.entries(providersData);
   const displayedCountries = showAllCountries ? countryEntries : countryEntries.slice(0, 3);
   
-  // Get the total number of seasons for the show
-  const totalSeasons = selectedSeries?.number_of_seasons || 0;
+  // Determine if content is a movie or series
+  const isMovie = selectedContent?.content_type === 'movie';
+  
+  // Get the total number of seasons for series, or set to 1 for movies
+  const totalSeasons = isMovie ? 1 : (selectedContent?.number_of_seasons || 0);
 
   return (
     <div className={`streaming-info ${isVisible ? 'visible' : ''}`}>
       {countryEntries.length > 0 ? (
         <div className="streaming-countries">
           {displayedCountries.map(([country, providers], countryIndex) => {
-            const maxSeasons = calculateMaxSeasons(providers);
+            const maxSeasons = isMovie ? 1 : calculateMaxSeasons(providers);
             
             return (
               <div 
@@ -66,9 +69,11 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                 </div>
                 <ul className="provider-list">
                   {Object.entries(providers).map(([providerName, providerInfo], providerIndex) => {
-                    const seasonCount = parseInt(providerInfo.count);
-                    const percentComplete = (seasonCount / totalSeasons) * 100;
-                    const isComplete = seasonCount >= totalSeasons;
+                    // For movies, we just check if it's available (count would be 1)
+                    // For series, we use the actual season count
+                    const seasonCount = isMovie ? 1 : parseInt(providerInfo.count);
+                    const percentComplete = isMovie ? 100 : (seasonCount / totalSeasons) * 100;
+                    const isComplete = isMovie || seasonCount >= totalSeasons;
                     
                     return (
                       <li key={providerIndex}>
@@ -84,20 +89,32 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
                         <div className="provider-info">
                           <div className="provider-header">
                             <span className="provider-name">{providerName}</span>
-                            {isComplete && <span className="availability-tag">Full Series</span>}
-                            {/* {providerInfo.type && (
-                              <span className="provider-type">{providerInfo.type}</span>
-                            )} */}
+                            {isMovie ? (
+                              <span className="availability-tag">Available</span>
+                            ) : (
+                              isComplete && <span className="availability-tag">Full Series</span>
+                            )}
                           </div>
-                          <span className="provider-seasons">
-                            {seasonCount} of {totalSeasons} season{totalSeasons !== 1 ? 's' : ''}
-                          </span>
-                          <div className="season-progress">
-                            <div 
-                              className="season-progress-bar" 
-                              style={{ width: `${percentComplete}%` }}
-                            ></div>
-                          </div>
+                          
+                          {/* Only show season information for series, not for movies */}
+                          {!isMovie && (
+                            <>
+                              <span className="provider-seasons">
+                                {seasonCount} of {totalSeasons} season{totalSeasons !== 1 ? 's' : ''}
+                              </span>
+                              <div className="season-progress">
+                                <div 
+                                  className="season-progress-bar" 
+                                  style={{ width: `${percentComplete}%` }}
+                                ></div>
+                              </div>
+                            </>
+                          )}
+                          
+                          {/* Show provider type if available */}
+                          {/* {providerInfo.type && (
+                            <span className="provider-type">{providerInfo.type}</span>
+                          )} */}
                         </div>
                       </li>
                     );
@@ -122,10 +139,11 @@ const StreamingInfo = ({ selectedSeries, streaming }) => {
         </div>
       )}
     </div>
-  );};
+  );
+};
 
 StreamingInfo.propTypes = {
-  selectedSeries: PropTypes.object,
+  selectedContent: PropTypes.object,
   streaming: PropTypes.array
 };
 
