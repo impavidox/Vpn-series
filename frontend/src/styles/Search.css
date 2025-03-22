@@ -150,6 +150,7 @@
 .funnel-icon{
   height: 100%;
   width: 100%;
+  max-height: 5vh;
 }
 
 /* ===== RESULTS HEADER ===== */
@@ -214,6 +215,7 @@
   display: flex;
   align-items: center;
   width: 100%;
+  gap: 40vw
 }
 
 /* ===== APPLIED FILTERS ===== */
@@ -894,11 +896,9 @@
   .results-filter-container {
     display: flex;
     align-items: center;
+    gap: 20vw
   }
   
-  .filter-trigger-button {
-    margin-left: 15vw;
-  }
   
   .results-count-container, 
   .showing-count {

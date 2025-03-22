@@ -373,12 +373,10 @@
   align-items: center;
   position: relative;
   width: 100%;
+  justify-content: center;
 }
 
-.results-header h2 {
-  text-align: center;
-  margin-left: 30vw;
-}
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
