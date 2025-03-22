@@ -214,6 +214,11 @@
     font-size: 3rem;
     margin-bottom: 10px;
   }
+
+  .continent-img {
+    object-fit: cover;
+    max-height: 8vh;
+  }
   
   .continent-name {
     font-size: 1.2rem;

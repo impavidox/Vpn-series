@@ -5,7 +5,7 @@ export const CONTINENTS = [
   {
     "id": "north-america",
     "name": "North America",
-    "icon": "🌎",
+    "icon": "northamerica.svg",
     "colors": "from-blue-500 to-cyan-400",
     "countries": [
       "US",
@@ -33,7 +33,7 @@ export const CONTINENTS = [
   {
     "id": "south-america",
     "name": "South America",
-    "icon": "🌎",
+    "icon": "southamerica.svg",
     "colors": "from-green-500 to-emerald-400",
     "countries": [
       "AR",
@@ -53,7 +53,7 @@ export const CONTINENTS = [
   {
     "id": "europe",
     "name": "Europe",
-    "icon": "🌍",
+    "icon": "europa.svg",
     "colors": "from-orange-500 to-amber-400",
     "countries": [
       "AL",
@@ -108,7 +108,7 @@ export const CONTINENTS = [
   {
     "id": "asia",
     "name": "Asia",
-    "icon": "🌏",
+    "icon": "asia.svg",
     "colors": "from-red-500 to-pink-400",
     "countries": [
       "AZ",
@@ -140,7 +140,7 @@ export const CONTINENTS = [
   {
     "id": "oceania",
     "name": "Oceania",
-    "icon": "🌏",
+    "icon": "oceania.svg",
     "colors": "from-purple-500 to-violet-400",
     "countries": [
       "AU",
@@ -153,7 +153,7 @@ export const CONTINENTS = [
   {
     "id": "africa",
     "name": "Africa",
-    "icon": "🌍",
+    "icon": "africa.svg",
     "colors": "from-yellow-500 to-amber-400",
     "countries": [
       "DZ",

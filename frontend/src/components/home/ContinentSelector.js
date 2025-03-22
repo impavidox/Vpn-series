@@ -23,7 +23,7 @@ const ContinentSelector = ({ isActive, onContinentSelect }) => {
             onClick={() => onContinentSelect(continent)}
           >
             <div className={`continent-inner bg-gradient-to-br ${continent.colors}`}>
-              <div className="continent-icon">{continent.icon}</div>
+              <div className="continent-icon"><img className="continent-img" src={continent.icon}></img></div>
               <div className="continent-name">{continent.name}</div>
             </div>
           </div>
