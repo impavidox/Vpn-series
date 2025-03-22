@@ -551,7 +551,7 @@ def enrich_movie_data(movie_batch):
                 "popularity": response.get('popularity', 0),
                 "poster_path": response.get('poster_path', ''),
                 "vote_average": response.get('vote_average', 0),
-                "vote_count": response.get('vote_count', 0),
+                "vote_count": int(response.get('vote_count', 0) / 4),
                 "plot": response.get('overview', ''),
                 "actors": actors,
                 "enrichment_updated_at": current_time,
