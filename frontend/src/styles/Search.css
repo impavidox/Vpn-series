@@ -974,3 +974,40 @@
     height: 40px; /* Smaller on mobile */
   }
 }
+
+
+/* Content Type Badge Styling */
+.rating-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+/* Orange badge for Movies */
+.movie-badge {
+  background: linear-gradient(to bottom right, var(--orange), #ff7a45);
+  border: 1px solid rgba(239, 131, 84, 0.5);
+}
+
+/* Cyan badge for TV Shows */
+.tvshow-badge {
+  background: linear-gradient(to bottom right, var(--blue), #39a0af);
+  border: 1px solid rgba(67, 188, 205, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .rating-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    top: 5px;
+    right: 5px;
+  }
+}

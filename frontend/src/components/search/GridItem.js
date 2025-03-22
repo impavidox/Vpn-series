@@ -4,7 +4,7 @@ import { getImageUrl } from '../../utils/helpers';
 
 /**
  * Grid item component for showing a show/movie in the search results
- * Fixed version to ensure proper styling and layout
+ * Updated to display "Movie" with orange label and "TV Show" with cyan label
  * 
  * @param {Object} props - Component props
  * @param {Object} props.item - The show/movie data
@@ -13,6 +13,34 @@ import { getImageUrl } from '../../utils/helpers';
 const GridItem = ({ item, onClick }) => {
   const handleClick = () => {
     onClick(item);
+  };
+
+  // Determine the badge color based on content type
+  const getBadgeClassName = (contentType) => {
+    if (!contentType) return "rating-badge";
+    
+    const type = contentType.toLowerCase();
+    if (type === "movie") {
+      return "rating-badge movie-badge";
+    } else if (type === "tv show" || type === "tv" || type === "show") {
+      return "rating-badge tvshow-badge";
+    }
+    return "rating-badge";
+  };
+
+  // Format the content type display text
+  const getContentTypeDisplay = (contentType) => {
+    if (!contentType) return "?";
+    
+    const type = contentType.toLowerCase();
+    if (type === "movie") {
+      return "Movie";
+    } else if (type === "tv" || type === "show") {
+      return "TV Show";
+    } else if (type === "tv show") {
+      return "TV Show";
+    }
+    return contentType;
   };
 
   return (
@@ -28,7 +56,9 @@ const GridItem = ({ item, onClick }) => {
           }}
         />
         {item.content_type && (
-          <div className="rating-badge">{item.content_type || '?'}</div>
+          <div className={getBadgeClassName(item.content_type)}>
+            {getContentTypeDisplay(item.content_type)}
+          </div>
         )}
       </div>
       
