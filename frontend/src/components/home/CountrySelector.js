@@ -38,7 +38,7 @@ const CountrySelector = ({
       <h2 className="section-title">Select Your Country</h2>
       {selectedContinent && (
         <h3 className="continent-subtitle">
-          <span className="subtitle-icon">{selectedContinent.icon}</span>
+          <span className="subtitle-icon"><img className="subtitle-img" src={selectedContinent.icon}></img></span>
           <span>{selectedContinent.name}</span>
         </h3>
       )}

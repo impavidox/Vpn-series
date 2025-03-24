@@ -219,6 +219,11 @@
     object-fit: cover;
     max-height: 8vh;
   }
+
+  .subtitle-img {
+    object-fit: cover;
+    max-height: 4vh;
+  }
   
   .continent-name {
     font-size: 1.2rem;
