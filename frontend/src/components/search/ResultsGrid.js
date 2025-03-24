@@ -6,6 +6,8 @@ import FilterTrigger from './FilterTrigger';
 import FilterPopup from './FilterPopup';
 import { formatResultsCount } from '../../utils/helpers';
 import { GENRES } from '../../constants/genres';
+import ScrollToTop from './ScrollToTop';
+import '../../styles/ScrollToTop.css'
 
 /**
  * Updated Grid component for displaying search results with filter popup
@@ -73,6 +75,7 @@ const ResultsGrid = ({
   };
 
   return (
+    <>
     <div className={`results-section ${animationComplete ? 'animate-in' : ''}`}>
       <div className="results-header">
         <div className="results-filter-container">
@@ -152,6 +155,8 @@ const ResultsGrid = ({
         </div>
       )}
     </div>
+    <ScrollToTop />
+    </>
   );
 };
 

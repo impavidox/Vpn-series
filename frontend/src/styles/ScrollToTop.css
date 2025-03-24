@@ -1,0 +1,91 @@
+/* Scroll to Top Button Styles */
+.scroll-to-top-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: var(--border-radius-round, 50%); /* Fallback if variable not defined */
+    background-color: var(--blue, #3498db); /* Fallback if variable not defined */
+    color: white;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1)); /* Fallback if variable not defined */
+    cursor: pointer;
+    
+    /* Start with button hidden */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    
+    /* Extremely high z-index to ensure it's above everything */
+    z-index: 9999;
+    
+    /* Use short, performant transitions */
+    transition: 
+      opacity 0.2s ease,
+      visibility 0.2s ease,
+      transform 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+      
+    /* Ensure the button is properly sized for the SVG */
+    padding: 0;
+  }
+  
+  /* When the visible class is added, show the button */
+  .scroll-to-top-button.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  
+  /* Hover effect */
+  .scroll-to-top-button:hover {
+    background-color: var(--blue-hover, #2980b9); /* Fallback if variable not defined */
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.1)); /* Fallback if variable not defined */
+  }
+  
+  /* Active/click effect */
+  .scroll-to-top-button:active {
+    transform: translateY(0) scale(0.95);
+  }
+  
+  /* Make sure the SVG is centered */
+  .scroll-to-top-button svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .scroll-to-top-button {
+      width: 45px;
+      height: 45px;
+      bottom: 25px;
+      right: 25px;
+    }
+    
+    .scroll-to-top-button svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .scroll-to-top-button {
+      width: 40px;
+      height: 40px;
+      bottom: 20px;
+      right: 20px;
+    }
+    
+    .scroll-to-top-button svg {
+      width: 18px;
+      height: 18px;
+    }
+  }

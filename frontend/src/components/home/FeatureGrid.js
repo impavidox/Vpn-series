@@ -7,22 +7,22 @@ import FeatureBox from './FeatureBox';
 const FeatureGrid = () => {
   const features = [
     {
-      icon: '🔍',
-      iconColor: 'cyan',
-      title: 'Global Search',
-      description: 'Find content across multiple streaming platforms worldwide'
+      icon: '🌎',
+      iconBg: 'bg-gradient-to-r from-blue-400 to-cyan-300',
+      title: 'Select Your Location',
+      description: 'Customize your experience by choosing your current region'
     },
     {
-      icon: '🎭',
-      iconColor: 'orange',
-      title: 'Hidden Gems',
-      description: 'Discover exclusive regional content not available at home'
+      icon: '🎬',
+      iconBg: 'bg-gradient-to-r from-rose-400 to-pink-500',
+      title: 'Select Your Subscriptions',
+      description: 'Choose from your active streaming services to find content across platforms'
     },
     {
-      icon: '🔐',
-      iconColor: 'green',
-      title: 'Legal Access',
-      description: 'Learn how to access region-locked content without hassle'
+      icon: '🔓',
+      iconBg: 'bg-gradient-to-r from-emerald-400 to-green-500',
+      title: 'Unlock Global Content',
+      description: 'Discover exactly which country to connect through for accessing your desired content'
     }
   ];
 

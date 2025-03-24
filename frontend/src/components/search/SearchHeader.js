@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Logo from '../common/Logo';
+import SlidingMenu from './SlidingMenu';
 import { getCountryName } from '../../utils/helpers';
 import countryDict from '../../country_dict.json';
+import { useLocation } from 'react-router-dom';
 
 /**
  * Updated Header component for the search page that includes search bar
+ * and sliding menu functionality
  * 
  * @param {Object} props - Component props
  * @param {boolean} props.animationComplete - Whether animations are complete
@@ -24,15 +27,39 @@ const SearchHeader = ({
   onSearch
 }) => {
   const countryName = getCountryName(country, countryDict);
-
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+  
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+  
   return (
-    <div className={`search-header ${animationComplete ? 'animate-in' : ''}`}>
-      <div className="search-header-content">
-        <img className="hamburger-img" src='hamburger.svg'></img>
-        <Logo onClick={onLogoClick} />
-        <img className="search-img" src='search.svg'></img>
+    <>
+      <div className={`search-header ${animationComplete ? 'animate-in' : ''} ${menuOpen ? 'header-opaque' : ''}`}>
+        <div className="search-header-content">
+          <img 
+            className="hamburger-img" 
+            src='hamburger.svg' 
+            alt="Menu"
+            onClick={toggleMenu}
+          />
+          <Logo onClick={onLogoClick} />
+          <img className="search-img" src='search.svg' alt="Search" />
+        </div>
       </div>
-    </div>
+      
+      {/* Sliding Menu Component */}
+      <SlidingMenu 
+        isOpen={menuOpen}
+        onClose={closeMenu}
+        currentRoute={location.pathname}
+      />
+    </>
   );
 };
 
